@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHUC SYSTEM - Link Hub & VIP</title>
+<style>
+:root{--primary:#6a11cb;--secondary:#2575fc;--bg:#0f0f13;--card:#1a1a24;--text:#fff;--text-muted:#999;--danger:#ff4757;--success:#2ed573;--warning:#ffa502}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+body{background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;border:none;outline:none;font-weight:600;transition:0.3s}
+button:hover{opacity:0.8;transform:translateY(-2px)}
+input,select{width:100%;padding:12px;background:#0a0a0f;border:1px solid #333;border-radius:8px;color:#fff;margin-bottom:12px;font-size:14px}
+input:focus{border-color:var(--primary)}
+
+/* HEADER */
+header{background:rgba(15,15,19,0.9);backdrop-filter:blur(10px);padding:15px 30px;display:flex;justify-content:space-between;align-items:center;position:fixed;width:100%;top:0;z-index:100;border-bottom:1px solid #222}
+.logo{font-size:20px;font-weight:800;background:linear-gradient(to right,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer}
+.header-right{display:flex;align-items:center;gap:15px}
+.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-weight:bold;cursor:pointer;font-size:18px}
+
+/* MAIN LAYOUT */
+.main-container{padding-top:80px;display:flex;flex:1}
+.sidebar{width:250px;background:var(--card);padding:20px;border-right:1px solid #222;position:fixed;top:80px;bottom:0;left:0;display:flex;flex-direction:column;gap:10px}
+.sidebar button{width:100%;padding:12px;text-align:left;background:transparent;color:#fff;border-radius:8px;font-size:15px;display:flex;align-items:center;gap:10px}
+.sidebar button:hover,.sidebar button.active{background:var(--primary)}
+.content{margin-left:250px;padding:30px;flex:1}
+.grid-links{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+
+/* CARD LINK */
+.link-card{background:var(--card);border-radius:12px;overflow:hidden;border:1px solid #333;transition:0.3s;display:flex;flex-direction:column}
+.link-card:hover{border-color:var(--primary);transform:translateY(-5px);box-shadow:0 10px 20px rgba(106,17,203,0.2)}
+.link-card .img-area{height:160px;background:#111;display:flex;align-items:center;justify-content:center;font-size:60px;position:relative;overflow:hidden}
+.link-card .img-area img{width:100%;height:100%;object-fit:cover}
+.link-card .info{padding:15px}
+.link-card h3{font-size:16px;margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.link-card p{font-size:12px;color:var(--text-muted);margin-bottom:15px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.link-card button{width:100%;padding:10px;background:var(--secondary);color:#fff;border-radius:6px}
+
+/* FLOATING ZALO */
+.zalo-btn{position:fixed;bottom:30px;right:30px;width:60px;height:60px;background:#0084ff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;box-shadow:0 5px 15px rgba(0,132,255,0.4);z-index:100}
+
+/* MODAL & PANELS */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;z-index:999;padding:20px}
+.modal.show{display:flex}
+.modal-content{background:var(--card);border-radius:16px;padding:25px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;border:1px solid #333;position:relative}
+.close-btn{position:absolute;top:15px;right:15px;background:transparent;color:#999;font-size:24px}
+.tab-header{display:flex;border-bottom:1px solid #333;margin-bottom:20px;gap:10px;overflow-x:auto}
+.tab-header button{padding:10px 15px;background:transparent;color:#999;border-bottom:2px solid transparent;white-space:nowrap}
+.tab-header button.active{color:var(--primary);border-color:var(--primary)}
+.btn-primary{background:linear-gradient(to right,var(--primary),var(--secondary));color:#fff;padding:12px;border-radius:8px;width:100%;margin-top:10px}
+.btn-danger{background:var(--danger);color:#fff;padding:8px;border-radius:6px}
+.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:bold;background:var(--primary);color:#fff;margin-left:5px}
+.badge-vip1{background:#ffa502}.badge-vip2{background:#ff4757}.badge-vip3{background:#eccc68;color:#000}
+
+/* ADMIN PANEL */
+.admin-nav{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.admin-nav button{padding:12px;text-align:left;background:#222;color:#fff;border-radius:8px}
+.admin-list-item{background:#0a0a0f;padding:15px;border-radius:8px;margin-bottom:10px;border:1px solid #222;font-size:14px}
+.wheel-container{text-align:center;margin:20px 0}
+.wheel{width:200px;height:200px;border-radius:50%;background:conic-gradient(var(--primary) 0deg 90deg, var(--secondary) 90deg 180deg, var(--danger) 180deg 270deg, var(--success) 270deg 360deg);margin:0 auto;position:relative;transition:transform 3s cubic-bezier(0.2,0.8,0.2,1);border:4px solid #fff}
+.wheel-arrow{width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-top:30px solid #fff;margin:0 auto -15px;position:relative;z-index:10}
+
+/* RANKING */
+.rank-item{display:flex;align-items:center;gap:15px;background:var(--card);padding:15px;border-radius:10px;margin-bottom:10px;border-left:4px solid var(--primary)}
+.rank-avatar{width:45px;height:45px;border-radius:50%;background:#333;display:flex;align-items:center;justify-content:center;font-weight:bold}
+.rank-info h4{font-size:15px;margin-bottom:4px}
+.rank-info p{font-size:12px;color:var(--text-muted)}
+.rank-score{margin-left:auto;font-weight:bold;color:var(--warning);font-size:18px}
+
+@media(max-width:768px){
+  .sidebar{width:100%;top:auto;bottom:0;flex-direction:row;overflow-x:auto;padding:10px;border-top:1px solid #222;border-right:none;z-index:100;justify-content:space-between}
+  .sidebar button{width:auto;flex-direction:column;font-size:11px;padding:5px;text-align:center;gap:5px}
+  .content{margin-left:0;padding-bottom:80px}
+  .header-right .balance{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo" onclick="showView('home')">PHUC HUB</div>
+  <div class="header-right">
+    <div id="userDisplay">
+      <button class="btn-primary" style="padding:8px 15px;margin:0" onclick="showModal('authModal')">Đăng nhập</button>
+    </div>
+  </div>
+</header>
+
+<div class="main-container">
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <button onclick="showView('home')" class="active" id="nav-home">🏠 Trang chủ</button>
+    <button onclick="showView('deposit')" id="nav-deposit">💰 Nạp tiền</button>
+    <button onclick="showView('wheel')" id="nav-wheel">🎁 Vòng quay</button>
+    <button onclick="showView('rank')" id="nav-rank">🏆 Xếp hạng</button>
+    <button onclick="showModal('staffModal')" id="nav-staff" style="display:none">💼 Kênh Nhân viên</button>
+    <button onclick="showModal('adminModal')" id="nav-admin" style="display:none;color:var(--warning)">⚙️ Admin Panel</button>
+  </div>
+
+  <!-- CONTENT AREA -->
+  <div class="content">
+    <!-- TRANG CHỦ -->
+    <div id="view-home">
+      <h2 style="margin-bottom:20px">Tất cả Link</h2>
+      <div class="grid-links" id="linksGrid"></div>
+    </div>
+
+    <!-- NẠP TIỀN -->
+    <div id="view-deposit" style="display:none;max-width:500px">
+      <h2>Nạp Tiền / Nâng VIP</h2>
+      <div class="modal-content" style="max-width:100%">
+        <p style="font-size:13px;color:#999;margin-bottom:15px">Nhập số tiền muốn nạp (10k, 30k, 50k) để nhận mã VIP.</p>
+        <select id="depositAmount">
+          <option value="10000">Nạp 10.000đ (Lên VIP 1)</option>
+          <option value="30000">Nạp 30.000đ (Lên VIP 2)</option>
+          <option value="50000">Nạp 50.000đ (Lên VIP 3)</option>
+          <option value="20000">Nạp 20.000đ (Không lên VIP)</option>
+        </select>
+        <button class="btn-primary" onclick="generateDepositCode()">Tạo mã nạp</button>
+        <div id="depositResult" style="display:none;margin-top:20px;padding:15px;background:#0a0a0f;border-radius:8px;border:1px dashed var(--warning)">
+          <p style="font-size:13px;margin-bottom:5px">Chuyển khoản theo nội dung:</p>
+          <h3 style="color:var(--warning);letter-spacing:1px;margin-bottom:10px" id="depositCodeText">...</h3>
+          <p style="font-size:12px;color:#999;margin-bottom:10px">Ngân hàng: MB Bank - STK: 0865561731 - Chủ TK: PHUC</p>
+          <button class="btn-primary" style="background:#0084ff" onclick="window.open('https://zalo.me/777991352')">Gửi mã qua Zalo Admin</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VÒNG QUAY -->
+    <div id="view-wheel" style="display:none;text-align:center">
+      <h2>Vòng Quay May Mắn</h2>
+      <p style="margin-bottom:20px;color:#999">Mỗi ngày có 1 lượt quay miễn phí (VIP có thêm lượt)</p>
+      <div class="wheel-container">
+        <div class="wheel-arrow"></div>
+        <div class="wheel" id="wheelCanvas"></div>
+      </div>
+      <button class="btn-primary" style="max-width:200px;margin:20px auto" onclick="spinWheel()">QUAY NGAY</button>
+      <p id="wheelResult" style="color:var(--success);font-weight:bold;margin-top:10px"></p>
+    </div>
+
+    <!-- BẢNG XẾP HẠNG -->
+    <div id="view-rank" style="display:none">
+      <h2>Bảng Xếp Hạng Nhân Viên (Vượt Link)</h2>
+      <div id="rankList" style="margin-top:20px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- NÚT ZALO LIÊN HỆ -->
+<a href="https://zalo.me/0865561731" target="_blank" class="zalo-btn">💬</a>
+
+<!-- MODAL AUTH -->
+<div class="modal" id="authModal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeModal('authModal')">✕</button>
+    <h2 style="text-align:center;margin-bottom:20px">Tài Khoản</h2>
+    <div class="tab-header">
+      <button onclick="switchAuthTab('login')" id="tab-login" class="active">Đăng nhập</button>
+      <button onclick="switchAuthTab('register')" id="tab-register">Đăng ký</button>
+    </div>
+    
+    <div id="auth-login">
+      <input type="text" id="loginUser" placeholder="Tên đăng nhập">
+      <input type="password" id="loginPass" placeholder="Mật khẩu">
+      <button class="btn-primary" onclick="doLogin()">Vào Hệ Thống</button>
+    </div>
+
+    <div id="auth-register" style="display:none">
+      <input type="text" id="regUser" placeholder="Tên đăng nhập">
+      <input type="email" id="regEmail" placeholder="Gmail (VD: phuc@nhanvin.com)">
+      <input type="password" id="regPass" placeholder="Mật khẩu">
+      <button class="btn-primary" onclick="doRegister()">Tạo Tài Khoản</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL KÊNH NHÂN VIÊN (GỬI MÃ ZALO) -->
+<div class="modal" id="staffModal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeModal('staffModal')">✕</button>
+    <h2 style="text-align:center">Kênh Nhân Viên</h2>
+    
+    <div id="staffNotActive" style="margin-top:20px;text-align:center">
+      <p style="font-size:14px;color:#999;margin-bottom:20px">Bạn cần mã kích hoạt để trở thành Nhân viên đăng link.</p>
+      <button class="btn-primary" onclick="getStaffCode()">Lấy mã đăng ký Staff</button>
+      <div id="staffCodeResult" style="display:none;margin-top:15px;padding:15px;background:#0a0a0f;border:1px dashed var(--primary);text-align:left">
+        <p style="font-size:13px;margin-bottom:5px">Gửi mã này cho Admin qua Zalo:</p>
+        <h3 style="color:var(--warning);letter-spacing:1px" id="staffCodeText">...</h3>
+        <button class="btn-primary" style="background:#0084ff;margin-top:10px" onclick="window.open('https://zalo.me/777991352')">Mở Zalo Gửi Admin</button>
+      </div>
+    </div>
+
+    <div id="staffActive" style="display:none;margin-top:20px;text-align:center">
+      <p style="color:var(--success);margin-bottom:15px;font-size:16px;font-weight:bold">✅ Bạn đã là Nhân Viên!</p>
+      <button class="btn-primary" onclick="closeModal('staffModal'); showModal('addLinkModal')">➕ Thêm Link Mới</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL THÊM LINK CHO STAFF -->
+<div class="modal" id="addLinkModal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeModal('addLinkModal')">✕</button>
+    <h2>Thêm Link Mới</h2>
+    <p style="font-size:12px;color:var(--warning);margin-bottom:15px" id="linkLimitMsg">Bạn còn 1 lượt đăng link hôm nay.</p>
+    
+    <input type="text" id="newLinkTitle" placeholder="Tên hiển thị (VD: Tool Hack FF)">
+    <input type="text" id="newLinkImg" placeholder="Link Ảnh (hoặc để trống dùng Icon)">
+    <input type="text" id="newLinkIcon" placeholder="Icon (VD: 🎮) - Nếu không có ảnh">
+    <input type="text" id="newLinkGoc" placeholder="Link Gốc (Link khách sẽ vào)">
+    <input type="text" id="newLinkVuot" placeholder="Link Vượt (Link trung gian kiếm view)">
+    
+    <button class="btn-primary" onclick="submitNewLink()">Đăng Link</button>
+  </div>
+</div>
+
+<!-- MODAL ADMIN PANEL -->
+<div class="modal" id="adminModal">
+  <div class="modal-content" style="max-width:700px">
+    <button class="close-btn" onclick="closeModal('adminModal')">✕</button>
+    <h2 style="color:var(--warning)">⚙️ Admin Panel</h2>
+    
+    <div class="admin-nav">
+      <button onclick="adminTab('admin-links')">1. Quản lý Link</button>
+      <button onclick="adminTab('admin-deposits')">2. Duyệt Nạp Tiền / VIP</button>
+      <button onclick="adminTab('admin-staffs')">3. Quản lý & Tạo Nhân Viên</button>
+      <button onclick="adminTab('admin-activate')">4. Duyệt Mã Kích Hoạt Staff</button>
+      <button onclick="adminTab('admin-settings')">5. Cài Đặt Hệ Thống</button>
+    </div>
+
+    <!-- TAB QUẢN LÝ LINK -->
+    <div id="admin-links" class="admin-tab-content">
+      <h3>Quản lý Link</h3>
+      <div id="adminLinkList"></div>
+    </div>
+
+    <!-- TAB DUYỆT NẠP TIỀN -->
+    <div id="admin-deposits" class="admin-tab-content" style="display:none">
+      <h3>Duyệt Giao Dịch</h3>
+      <div id="adminDepositList"></div>
+    </div>
+
+    <!-- TAB QUẢN LÝ NHÂN VIÊN (TỰ TẠO) -->
+    <div id="admin-staffs" class="admin-tab-content" style="display:none">
+      <div style="background:#1a1a24;padding:15px;border-radius:8px;margin-bottom:20px;border:1px solid #333">
+        <h4 style="margin-bottom:10px;color:var(--primary)">Tạo Tài Khoản Nhân Viên Mới</h4>
+        <input type="text" id="adminNewStaffUser" placeholder="Tên đăng nhập (VD: nhanvien1)">
+        <input type="password" id="adminNewStaffPass" placeholder="Mật khẩu (VD: 123456)">
+        <input type="email" id="adminNewStaffEmail" placeholder="Gmail (Không bắt buộc)">
+        <button class="btn-primary" onclick="adminCreateStaff()" style="margin-top:0">➕ Tạo Nhân Viên</button>
+      </div>
+      <h3>Danh sách Nhân viên</h3>
+      <div id="adminStaffList"></div>
+    </div>
+
+    <!-- TAB DUYỆT MÃ KÍCH HOẠT -->
+    <div id="admin-activate" class="admin-tab-content" style="display:none">
+      <h3>Duyệt Mã Kích Hoạt Staff</h3>
+      <p style="font-size:12px;color:#999;margin-bottom:15px">Nhập mã (shop-phuc-xxxx) và tên User mà khách đã gửi qua Zalo.</p>
+      <input type="text" id="adminActiveCode" placeholder="Mã code (VD: shop-phuc-1234)">
+      <input type="text" id="adminActiveUser" placeholder="Tên tài khoản khách hàng">
+      <button class="btn-primary" onclick="adminProcessStaffCode()">Kích Hoạt Nhân Viên</button>
+    </div>
+
+    <!-- TAB CÀI ĐẶT -->
+    <div id="admin-settings" class="admin-tab-content" style="display:none">
+      <h3>Cài đặt hệ thống</h3>
+      <p style="font-size:13px;margin-bottom:5px">Mã code nạp tiền (Tiền tố):</p>
+      <input type="text" id="adminSetBankCode" value="phuc-xxx">
+      <button class="btn-primary" onclick="adminSaveSettings()">Lưu Cài Đặt</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPT FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, get, push, update, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAOKxix32T2rC9_TrF9mk6socuR0YCcVno",
+  authDomain: "mrphuc-51580.firebaseapp.com",
+  databaseURL: "https://mrphuc-51580-default-rtdb.firebaseio.com",
+  projectId: "mrphuc-51580",
+  storageBucket: "mrphuc-51580.firebasestorage.app",
+  messagingSenderId: "922607657180",
+  appId: "1:922607657180:web:2d1f482bd5aa562214d419"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const DB_PATH = "phuc_system_v5"; // Đổi DB để đảm bảo data mới
+
+let currentUser = null;
+let siteSettings = { bankCode: "phuc-xxx" };
+let usersCache = {};
+
+window.notify = (msg, type='success') => {
+  const el = document.createElement('div');
+  el.style.cssText = `position:fixed;top:20px;right:20px;background:${type==='success'?'var(--success)':'var(--danger)'};color:#fff;padding:12px 20px;border-radius:8px;font-weight:bold;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.3)`;
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(), 3000);
+};
+
+function getTodayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+}
+
+window.showView = (viewName) => {
+  ['home', 'deposit', 'wheel', 'rank'].forEach(v => {
+    document.getElementById(`view-${v}`).style.display = 'none';
+  });
+  document.getElementById(`view-${viewName}`).style.display = 'block';
+  
+  document.querySelectorAll('.sidebar button').forEach(b => b.classList.remove('active'));
+  if(document.getElementById(`nav-${viewName}`)) document.getElementById(`nav-${viewName}`).classList.add('active');
+
+  if(viewName === 'rank') renderRanking();
+};
+
+window.showModal = (id) => {
+  document.getElementById(id).classList.add('show');
+  if(id === 'staffModal') updateStaffModal();
+  if(id === 'addLinkModal') updateLinkLimitMsg();
+};
+window.closeModal = (id) => document.getElementById(id).classList.remove('show');
+
+window.switchAuthTab = (tab) => {
+  document.getElementById('tab-login').classList.toggle('active', tab==='login');
+  document.getElementById('tab-register').classList.toggle('active', tab==='register');
+  document.getElementById('auth-login').style.display = tab==='login' ? 'block' : 'none';
+  document.getElementById('auth-register').style.display = tab==='register' ? 'block' : 'none';
+};
+
+window.doRegister = async () => {
+  const user = document.getElementById('regUser').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const pass = document.getElementById('regPass').value;
+  if(!user || !pass) return window.notify('Nhập đủ tên và mật khẩu', 'error');
+  
+  const snap = await get(ref(db, DB_PATH+'/users/'+user));
+  if(snap.exists()) return window.notify('Tên đã tồn tại', 'error');
+
+  await set(ref(db, DB_PATH+'/users/'+user), {
+    user, email, pass, role: 'user', vip: 0, balance: 0, views: 0, createdAt: Date.now(), status: 'active',
+    lastLinkDate: '', linksToday: 0, turns: 1, lastWheelDate: ''
+  });
+  window.notify('Đăng ký thành công!');
+  document.getElementById('loginUser').value = user;
+  switchAuthTab('login');
+};
+
+window.doLogin = async () => {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  
+  if(u === 'Phuc' && p === 'phc51580') {
+    currentUser = { user: 'Phuc', role: 'admin', vip: 3, balance: 999999 };
+    localStorage.setItem('phuc_session', JSON.stringify(currentUser));
+    window.notify('Chào Admin!');
+    updateUI();
+    closeModal('authModal');
+    return;
+  }
+
+  const snap = await get(ref(db, DB_PATH+'/users/'+u));
+  if(!snap.exists()) return window.notify('Tài khoản không tồn tại', 'error');
+  const data = snap.val();
+  if(data.pass !== p) return window.notify('Sai mật khẩu', 'error');
+  if(data.status === 'blocked') return window.notify('Tài khoản đã bị khóa', 'error');
+
+  currentUser = data;
+  localStorage.setItem('phuc_session', JSON.stringify(currentUser));
+  window.notify('Đăng nhập thành công');
+  updateUI();
+  closeModal('authModal');
+};
+
+window.logout = () => {
+  localStorage.removeItem('phuc_session');
+  currentUser = null;
+  updateUI();
+  window.notify('Đã đăng xuất');
+};
+
+function updateUI() {
+  const area = document.getElementById('userDisplay');
+  if(currentUser) {
+    let vipText = currentUser.vip > 0 ? `<span class="badge badge-vip${currentUser.vip}">VIP ${currentUser.vip}</span>` : '';
+    area.innerHTML = `
+      <div style="display:flex;align-items:center;gap:15px">
+        <span style="font-weight:bold;color:var(--warning)">${(currentUser.balance||0).toLocaleString()}đ</span>
+        <div class="avatar" onclick="toggleUserMenu()">${currentUser.user.charAt(0).toUpperCase()}</div>
+      </div>
+      <div id="userMenu" style="display:none;position:absolute;top:60px;right:20px;background:var(--card);border:1px solid #333;border-radius:8px;padding:10px;min-width:150px;box-shadow:0 5px 15px rgba(0,0,0,0.5)">
+        <p style="padding:10px;border-bottom:1px solid #333;font-weight:bold">${currentUser.user} ${vipText}</p>
+        <button style="width:100%;text-align:left;padding:10px;background:none;border:none;color:#fff" onclick="logout()">🚪 Đăng xuất</button>
+      </div>
+    `;
+    
+    document.getElementById('nav-staff').style.display = currentUser.role === 'staff' || currentUser.role === 'admin' ? 'flex' : 'none';
+    document.getElementById('nav-admin').style.display = currentUser.role === 'admin' ? 'flex' : 'none';
+    
+    checkDailyLimits();
+  } else {
+    area.innerHTML = `<button class="btn-primary" style="padding:8px 15px;margin:0" onclick="showModal('authModal')">Đăng nhập</button>`;
+    document.getElementById('nav-staff').style.display = 'none';
+    document.getElementById('nav-admin').style.display = 'none';
+  }
+}
+window.toggleUserMenu = () => {
+  const m = document.getElementById('userMenu');
+  if(m) m.style.display = m.style.display === 'none' ? 'block' : 'none';
+};
+
+function checkDailyLimits() {
+  if(!currentUser) return;
+  const today = getTodayStr();
+  if(currentUser.lastLinkDate !== today) {
+    currentUser.linksToday = 0;
+    currentUser.lastLinkDate = today;
+  }
+  if(currentUser.lastWheelDate !== today) {
+    let freeTurns = 1;
+    if(currentUser.vip === 3) freeTurns = 2;
+    currentUser.turns = freeTurns;
+    currentUser.lastWheelDate = today;
+  }
+}
+
+window.updateStaffModal = () => {
+  if(!currentUser) return;
+  if(currentUser.role === 'staff' || currentUser.role === 'admin') {
+    document.getElementById('staffNotActive').style.display = 'none';
+    document.getElementById('staffActive').style.display = 'block';
+  } else {
+    document.getElementById('staffNotActive').style.display = 'block';
+    document.getElementById('staffActive').style.display = 'none';
+    document.getElementById('staffCodeResult').style.display = 'none';
+  }
+};
+
+// LẤY MÃ STAFF GỬI ZALO
+window.getStaffCode = async () => {
+  if(!currentUser) return window.notify('Vui lòng đăng nhập', 'error');
+  const random = Math.floor(1000 + Math.random() * 9000);
+  const code = `shop-phuc-${random}`;
+  
+  await set(ref(db, DB_PATH+'/pending_staff/'+code), { user: currentUser.user, time: Date.now() });
+  
+  document.getElementById('staffCodeText').textContent = code;
+  document.getElementById('staffCodeResult').style.display = 'block';
+};
+
+window.updateLinkLimitMsg = () => {
+  if(!currentUser) return;
+  const maxLinks = currentUser.vip === 1 ? 3 : currentUser.vip === 2 ? 5 : currentUser.vip === 3 ? 999 : 1;
+  document.getElementById('linkLimitMsg').textContent = `Bạn còn ${maxLinks - (currentUser.linksToday||0)} lượt đăng link hôm nay.`;
+};
+
+window.submitNewLink = async () => {
+  if(!currentUser) return;
+  const title = document.getElementById('newLinkTitle').value.trim();
+  const img = document.getElementById('newLinkImg').value.trim();
+  const icon = document.getElementById('newLinkIcon').value.trim() || '🔗';
+  const linkGoc = document.getElementById('newLinkGoc').value.trim();
+  const linkVuot = document.getElementById('newLinkVuot').value.trim();
+  
+  if(!title || !linkGoc) return window.notify('Nhập tên và link gốc', 'error');
+  
+  const maxLinks = currentUser.vip === 1 ? 3 : currentUser.vip === 2 ? 5 : currentUser.vip === 3 ? 999 : 1;
+  if(currentUser.linksToday >= maxLinks) {
+    return window.notify('Đã hết lượt đăng link hôm nay. Nâng VIP để thêm!', 'error');
+  }
+
+  await push(ref(db, DB_PATH+'/links'), {
+    staff: currentUser.user, title, img, icon, linkGoc, linkVuot: linkVuot || linkGoc, views: 0, createdAt: Date.now(), status: 'active'
+  });
+
+  currentUser.linksToday++;
+  await update(ref(db, DB_PATH+'/users/'+currentUser.user), { linksToday: currentUser.linksToday, lastLinkDate: getTodayStr() });
+  localStorage.setItem('phuc_session', JSON.stringify(currentUser));
+  
+  window.notify('Đăng link thành công!');
+  closeModal('addLinkModal');
+  document.getElementById('newLinkTitle').value = '';
+  document.getElementById('newLinkImg').value = '';
+  document.getElementById('newLinkGoc').value = '';
+  document.getElementById('newLinkVuot').value = '';
+};
+
+onValue(ref(db, DB_PATH+'/links'), (snap) => {
+  const grid = document.getElementById('linksGrid');
+  if(!snap.exists()) { grid.innerHTML = '<p>Chưa có link nào.</p>'; return; }
+  let html = '';
+  Object.entries(snap.val()).forEach(([id, l]) => {
+    if(l.status !== 'active') return;
+    const imgTag = l.img ? `<img src="${l.img}" onerror="this.parentElement.innerHTML='<span style=font-size:50px>${l.icon}</span>'">` : `<span style="font-size:50px">${l.icon}</span>`;
+    html += `
+      <div class="link-card">
+        <div class="img-area">${imgTag}</div>
+        <div class="info">
+          <h3>${l.title}</h3>
+          <p>Người đăng: ${l.staff}</p>
+          <button onclick="visitLink('${id}', '${l.linkVuot}')">Truy cập ngay</button>
+        </div>
+      </div>
+    `;
+  });
+  grid.innerHTML = html;
+});
+
+window.visitLink = async (linkId, url) => {
+  const linkRef = ref(db, DB_PATH+'/links/'+linkId);
+  const snap = await get(linkRef);
+  if(snap.exists()) {
+    const data = snap.val();
+    await update(linkRef, { views: (data.views||0) + 1 });
+    const staffRef = ref(db, DB_PATH+'/users/'+data.staff);
+    const staffSnap = await get(staffRef);
+    if(staffSnap.exists()) {
+      await update(staffRef, { views: (staffSnap.val().views||0) + 1 });
+    }
+  }
+  window.open(url, '_blank');
+};
+
+onValue(ref(db, DB_PATH+'/users'), (snap) => {
+  usersCache = snap.val() || {};
+  renderRanking();
+});
+window.renderRanking = () => {
+  const list = Object.values(usersCache).filter(u => u.role === 'staff' || u.views > 0).sort((a,b) => (b.views||0) - (a.views||0)).slice(0, 10);
+  const el = document.getElementById('rankList');
+  el.innerHTML = list.map((u, i) => `
+    <div class="rank-item">
+      <div class="rank-avatar">${i+1}</div>
+      <div class="rank-info">
+        <h4>${u.user} ${u.vip>0?`<span class="badge badge-vip${u.vip}">VIP ${u.vip}</span>`:''}</h4>
+        <p>Nhân viên</p>
+      </div>
+      <div class="rank-score">${u.views||0} views</div>
+    </div>
+  `).join('');
+};
+
+window.generateDepositCode = async () => {
+  if(!currentUser) return window.notify('Vui lòng đăng nhập', 'error');
+  const amount = parseInt(document.getElementById('depositAmount').value);
+  let code = '';
+  const randomStr = Math.floor(1000 + Math.random() * 9000); 
+  
+  if(amount === 10000) code = `vip-1-${randomStr}`;
+  else if(amount === 30000) code = `vip-2-${randomStr}`;
+  else if(amount === 50000) code = `vip-3-${randomStr}`;
+  else code = `${siteSettings.bankCode.replace('xxx', randomStr)}`;
+
+  await push(ref(db, DB_PATH+'/deposits'), {
+    user: currentUser.user, amount, code, status: 'pending', time: Date.now(), type: amount >= 10000 ? 'vip' : 'topup'
+  });
+
+  document.getElementById('depositCodeText').textContent = code;
+  document.getElementById('depositResult').style.display = 'block';
+};
+
+window.spinWheel = async () => {
+  if(!currentUser) return window.notify('Vui lòng đăng nhập', 'error');
+  if(currentUser.turns <= 0) return window.notify('Đã hết lượt quay hôm nay', 'error');
+
+  const wheel = document.getElementById('wheelCanvas');
+  const deg = 1800 + Math.floor(Math.random() * 360);
+  wheel.style.transform = `rotate(${deg}deg)`;
+
+  currentUser.turns--;
+  await update(ref(db, DB_PATH+'/users/'+currentUser.user), { turns: currentUser.turns, lastWheelDate: getTodayStr() });
+  localStorage.setItem('phuc_session', JSON.stringify(currentUser));
+
+  setTimeout(() => {
+    const prizes = ["10k", "20k", "Chúc may mắn lần sau", "50k", "Thẻ cào 10k"];
+    const win = prizes[Math.floor(Math.random()*prizes.length)];
+    document.getElementById('wheelResult').textContent = `🎉 Bạn nhận được: ${win}`;
+    updateUI();
+  }, 3000);
+};
+
+// ====== ADMIN ======
+window.adminTab = (id) => {
+  document.querySelectorAll('.admin-tab-content').forEach(el => el.style.display = 'none');
+  document.getElementById(id).style.display = 'block';
+  if(id === 'admin-links') loadAdminLinks();
+  if(id === 'admin-deposits') loadAdminDeposits();
+  if(id === 'admin-staffs') loadAdminStaffs();
+};
+
+async function loadAdminLinks() {
+  const snap = await get(ref(db, DB_PATH+'/links'));
+  const el = document.getElementById('adminLinkList');
+  if(!snap.exists()) { el.innerHTML = 'Chưa có link'; return; }
+  let html = '';
+  Object.entries(snap.val()).forEach(([id, l]) => {
+    const time = new Date(l.createdAt).toLocaleString('vi-VN');
+    html += `
+      <div class="admin-list-item">
+        <h4>${l.title} (${l.staff}) - ${l.views} views</h4>
+        <p style="font-size:12px;color:#999">Ngày tạo: ${time} | Trạng thái: ${l.status}</p>
+        <div style="margin-top:10px;display:flex;gap:10px">
+          <button class="btn-danger" onclick="adminDeleteLink('${id}')">Xóa Link</button>
+        </div>
+      </div>
+    `;
+  });
+  el.innerHTML = html;
+}
+
+window.adminDeleteLink = async (id) => {
+  if(!confirm('Xóa link này?')) return;
+  await remove(ref(db, DB_PATH+'/links/'+id));
+  loadAdminLinks();
+  window.notify('Đã xóa link');
+};
+
+async function loadAdminDeposits() {
+  const snap = await get(ref(db, DB_PATH+'/deposits'));
+  const el = document.getElementById('adminDepositList');
+  if(!snap.exists()) { el.innerHTML = 'Chưa có giao dịch'; return; }
+  let html = '';
+  Object.entries(snap.val()).filter(([id, d]) => d.status === 'pending').forEach(([id, d]) => {
+    const time = new Date(d.time).toLocaleString('vi-VN');
+    html += `
+      <div class="admin-list-item" style="border-left:3px solid var(--warning)">
+        <h4>User: ${d.user} muốn nạp ${d.amount.toLocaleString()}đ</h4>
+        <p style="font-size:12px;color:#999">Mã: <b style="color:var(--warning)">${d.code}</b> | Lúc: ${time}</p>
+        <div style="margin-top:10px;display:flex;gap:10px">
+          <button class="btn-primary" style="background:var(--success)" onclick="adminApproveDeposit('${id}', '${d.user}', ${d.amount}, '${d.code}')">Duyệt</button>
+          <button class="btn-danger" onclick="adminRejectDeposit('${id}')">Từ chối</button>
+        </div>
+      </div>
+    `;
+  });
+  el.innerHTML = html;
+}
+
+window.adminApproveDeposit = async (id, user, amount, code) => {
+  const userRef = ref(db, DB_PATH+'/users/'+user);
+  const snap = await get(userRef);
+  if(!snap.exists()) return window.notify('User không tồn tại', 'error');
+  const u = snap.val();
+  
+  let newVip = u.vip || 0;
+  if(code.startsWith('vip-1')) newVip = 1;
+  else if(code.startsWith('vip-2')) newVip = 2;
+  else if(code.startsWith('vip-3')) newVip = 3;
+
+  await update(userRef, { balance: (u.balance||0) + amount, vip: newVip });
+  await update(ref(db, DB_PATH+'/deposits/'+id), { status: 'approved' });
+  window.notify('Duyệt thành công!');
+  loadAdminDeposits();
+  renderRanking();
+};
+
+// ADMIN TỰ TẠO STAFF
+window.adminCreateStaff = async () => {
+  const user = document.getElementById('adminNewStaffUser').value.trim();
+  const pass = document.getElementById('adminNewStaffPass').value;
+  const email = document.getElementById('adminNewStaffEmail').value.trim() || 'staff@phuchub.com';
+  
+  if(!user || !pass) return window.notify('Nhập tên và mật khẩu', 'error');
+  
+  const snap = await get(ref(db, DB_PATH+'/users/'+user));
+  if(snap.exists()) return window.notify('Tên đăng nhập đã tồn tại!', 'error');
+  
+  await set(ref(db, DB_PATH+'/users/'+user), {
+    user, email, pass, role: 'staff', vip: 0, balance: 0, views: 0, createdAt: Date.now(), status: 'active',
+    lastLinkDate: '', linksToday: 0, turns: 1, lastWheelDate: ''
+  });
+  window.notify('Tạo tài khoản Nhân viên thành công!');
+  document.getElementById('adminNewStaffUser').value = '';
+  document.getElementById('adminNewStaffPass').value = '';
+  document.getElementById('adminNewStaffEmail').value = '';
+  loadAdminStaffs();
+};
+
+// ADMIN DUYỆT MÃ STAFF
+window.adminProcessStaffCode = async () => {
+  const code = document.getElementById('adminActiveCode').value.trim();
+  const user = document.getElementById('adminActiveUser').value.trim();
+  if(!code || !user) return window.notify('Nhập đủ mã và tên user', 'error');
+
+  const codeSnap = await get(ref(db, DB_PATH+'/pending_staff/'+code));
+  if(!codeSnap.exists()) return window.notify('Mã không hợp lệ hoặc đã dùng', 'error');
+
+  const userRef = ref(db, DB_PATH+'/users/'+user);
+  const userSnap = await get(userRef);
+  if(!userSnap.exists()) return window.notify('User không tồn tại trên hệ thống', 'error');
+
+  await update(userRef, { role: 'staff' });
+  await remove(ref(db, DB_PATH+'/pending_staff/'+code));
+  
+  window.notify(`Đã duyệt ${user} thành Nhân Viên!`);
+  document.getElementById('adminActiveCode').value = '';
+  document.getElementById('adminActiveUser').value = '';
+};
+
+async function loadAdminStaffs() {
+  const snap = await get(ref(db, DB_PATH+'/users'));
+  const el = document.getElementById('adminStaffList');
+  if(!snap.exists()) { el.innerHTML = 'Chưa có ai'; return; }
+  let html = '';
+  Object.entries(snap.val()).filter(([u, data]) => data.role === 'staff').forEach(([u, data]) => {
+    html += `
+      <div class="admin-list-item">
+        <h4>${u} - ${data.views||0} views</h4>
+        <p style="font-size:12px;color:#999">VIP: ${data.vip||0} | Trạng thái: ${data.status}</p>
+        <div style="margin-top:10px;display:flex;gap:10px">
+          <button class="btn-danger" onclick="adminBlockStaff('${u}')">Khóa TK</button>
+        </div>
+      </div>
+    `;
+  });
+  el.innerHTML = html;
+}
+
+window.adminBlockStaff = async (user) => {
+  if(!confirm('Khóa tài khoản này?')) return;
+  await update(ref(db, DB_PATH+'/users/'+user), { status: 'blocked' });
+  window.notify('Đã khóa');
+  loadAdminStaffs();
+};
+
+window.adminSaveSettings = async () => {
+  const bankCode = document.getElementById('adminSetBankCode').value.trim();
+  await update(ref(db, DB_PATH+'/settings'), { bankCode });
+  window.notify('Lưu cài đặt thành công');
+};
+
+onValue(ref(db, DB_PATH+'/settings'), snap => {
+  if(snap.exists()) siteSettings = snap.val();
+});
+const session = localStorage.getItem('phuc_session');
+if(session) {
+  currentUser = JSON.parse(session);
+  get(ref(db, DB_PATH+'/users/'+currentUser.user)).then(s => {
+    if(s.exists()) {
+      currentUser = { ...currentUser, ...s.val() };
+      updateUI();
+    }
+  });
+} else {
+  updateUI();
+}
+</script>
+</body>
+</html>
