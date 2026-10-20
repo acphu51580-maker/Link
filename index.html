@@ -556,7 +556,7 @@ onValue(ref(db, DB_PATH+'/links'), (snap) => {
     let btnHtml = '';
     if(l.price && l.price > 0) {
         btnHtml = `
-            <button class="btn-view" onclick="visitLink('${id}', '${l.linkVuot}')">Vượt Link</button>
+            <button class="btn-view" onclick="visitLink('${id}', '${l.linkVuot || l.linkGoc}')">Vượt Link</button>
             <button class="btn-buy-price" onclick="buyLink('${id}', '${l.staff}', ${l.price}, '${l.linkGoc}')">Mua Link: ${l.price.toLocaleString()}đ</button>
         `;
     } else {
@@ -577,39 +577,53 @@ onValue(ref(db, DB_PATH+'/links'), (snap) => {
   grid.innerHTML = html;
 });
 
+// HÀM VƯỢT LINK (ĐÃ FIX LỖI SAFARI CHẶN POPUP)
 window.visitLink = async (linkId, url) => {
-  const linkRef = ref(db, DB_PATH+'/links/'+linkId);
-  const snap = await get(linkRef);
-  if(snap.exists()) {
-    const data = snap.val();
-    await update(linkRef, { views: (data.views||0) + 1 });
-    const staffRef = ref(db, DB_PATH+'/users/'+data.staff);
-    const staffSnap = await get(staffRef);
-    if(staffSnap.exists()) { await update(staffRef, { views: (staffSnap.val().views||0) + 1 }); }
-  }
-  window.open(url, '_blank');
+  // 1. Mở link ngay lập tức để Safari không chặn
+  if(url && url !== 'undefined') window.open(url, '_blank');
+  
+  // 2. Chạy ngầm phần lưu lượt xem
+  try {
+    const linkRef = ref(db, DB_PATH+'/links/'+linkId);
+    const snap = await get(linkRef);
+    if(snap.exists()) {
+      const data = snap.val();
+      await update(linkRef, { views: (data.views||0) + 1 });
+      const staffRef = ref(db, DB_PATH+'/users/'+data.staff);
+      const staffSnap = await get(staffRef);
+      if(staffSnap.exists()) { await update(staffRef, { views: (staffSnap.val().views||0) + 1 }); }
+    }
+  } catch (e) { console.error(e); }
 };
 
+// HÀM MUA LINK (ĐÃ FIX LỖI SAFARI CHẶN POPUP)
 window.buyLink = async (linkId, staffName, price, url) => {
     if(!currentUser) return window.notify('Vui lòng đăng nhập', 'error');
-    if(currentUser.role === 'admin' || currentUser.user === staffName) { window.open(url, '_blank'); return; }
+    if(currentUser.role === 'admin' || currentUser.user === staffName) { 
+        window.open(url, '_blank'); return; 
+    }
     if(currentUser.balance < price) return window.notify('Số dư không đủ!', 'error');
     
     if(!confirm(`Bạn có chắc chắn muốn mua link gốc này với giá ${price.toLocaleString()}đ?`)) return;
 
-    const userRef = ref(db, DB_PATH+'/users/'+currentUser.user);
-    const newBal = currentUser.balance - price;
-    await update(userRef, { balance: newBal });
-    currentUser.balance = newBal;
-    localStorage.setItem('phuc_session', JSON.stringify(currentUser));
-    updateUI();
+    // 1. Mở link ngay lập tức
+    if(url && url !== 'undefined') window.open(url, '_blank');
 
-    const staffRef = ref(db, DB_PATH+'/users/'+staffName);
-    const staffSnap = await get(staffRef);
-    if(staffSnap.exists()) { await update(staffRef, { balance: (staffSnap.val().balance || 0) + price }); }
+    // 2. Chạy ngầm phần trừ tiền và cộng tiền
+    try {
+        const userRef = ref(db, DB_PATH+'/users/'+currentUser.user);
+        const newBal = currentUser.balance - price;
+        await update(userRef, { balance: newBal });
+        currentUser.balance = newBal;
+        localStorage.setItem('phuc_session', JSON.stringify(currentUser));
+        updateUI();
 
-    window.notify('Mua link thành công! Đang vào link gốc...');
-    window.open(url, '_blank');
+        const staffRef = ref(db, DB_PATH+'/users/'+staffName);
+        const staffSnap = await get(staffRef);
+        if(staffSnap.exists()) { await update(staffRef, { balance: (staffSnap.val().balance || 0) + price }); }
+
+        window.notify('Mua link thành công!');
+    } catch (e) { console.error(e); }
 };
 
 // RANKING
