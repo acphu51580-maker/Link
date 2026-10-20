@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PHUC SYSTEM - Link Hub & VIP</title>
+<title>PHUC SYSTEM</title>
 <style>
 :root{--primary:#6a11cb;--secondary:#2575fc;--bg:#0f0f13;--card:#1a1a24;--text:#fff;--text-muted:#999;--danger:#ff4757;--success:#2ed573;--warning:#ffa502}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
@@ -11,14 +11,14 @@ body{background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-d
 a{text-decoration:none;color:inherit}
 button{cursor:pointer;border:none;outline:none;font-weight:600;transition:0.3s}
 button:hover{opacity:0.8}
-input,select{width:100%;padding:12px;background:#0a0a0f;border:1px solid #333;border-radius:8px;color:#fff;margin-bottom:12px;font-size:14px}
-input:focus{border-color:var(--primary)}
+input,select,textarea{width:100%;padding:12px;background:#0a0a0f;border:1px solid #333;border-radius:8px;color:#fff;margin-bottom:12px;font-size:14px}
+input:focus,textarea:focus{border-color:var(--primary)}
 
 /* HEADER */
 header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20px;display:flex;justify-content:space-between;align-items:center;position:fixed;width:100%;top:0;z-index:100;border-bottom:1px solid #222;height:65px}
 .header-left{display:flex;align-items:center;gap:15px}
-.menu-toggle{font-size:24px;cursor:pointer;display:none}
-.logo{font-size:20px;font-weight:800;background:linear-gradient(to right,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer}
+.menu-toggle{font-size:24px;cursor:pointer}
+.logo{font-size:20px;font-weight:800;background:linear-gradient(to right,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
 .header-right{display:flex;align-items:center;gap:15px}
 .avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-weight:bold;cursor:pointer;font-size:18px}
 
@@ -30,7 +30,7 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
 .sidebar{width:250px;background:var(--card);padding:20px;border-right:1px solid #222;position:fixed;top:65px;bottom:0;left:0;display:flex;flex-direction:column;gap:10px;z-index:100;transition:0.3s}
 .sidebar button{width:100%;padding:12px;text-align:left;background:transparent;color:#fff;border-radius:8px;font-size:15px;display:flex;align-items:center;gap:10px}
 .sidebar button:hover,.sidebar button.active{background:var(--primary)}
-.content{margin-left:250px;padding:20px;flex:1;width:calc(100% - 250px)}
+.content{margin-left:250px;padding:20px;flex:1;width:calc(100% - 250px);min-height:calc(100vh - 65px)}
 .grid-links{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
 
 /* CARD LINK */
@@ -62,24 +62,28 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
 .badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:bold;background:var(--primary);color:#fff;margin-left:5px}
 .badge-vip1{background:#ffa502}.badge-vip2{background:#ff4757}.badge-vip3{background:#eccc68;color:#000}
 
-/* ADMIN PANEL */
-.admin-nav{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
-.admin-nav button{padding:12px;text-align:left;background:#222;color:#fff;border-radius:8px}
-.admin-list-item{background:#0a0a0f;padding:15px;border-radius:8px;margin-bottom:10px;border:1px solid #222;font-size:14px}
+/* ADMIN PANEL VIEW */
+.admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.admin-tabs-nav{display:flex;gap:10px;margin-bottom:20px;overflow-x:auto;padding-bottom:10px;border-bottom:1px solid #333}
+.admin-tabs-nav button{padding:10px 15px;background:#222;color:#fff;border-radius:8px;white-space:nowrap}
+.admin-tabs-nav button.active{background:var(--primary)}
+.admin-list-item{background:var(--card);padding:15px;border-radius:8px;margin-bottom:10px;border:1px solid #333;font-size:14px}
+
 .wheel-container{text-align:center;margin:20px 0}
 .wheel{width:200px;height:200px;border-radius:50%;background:conic-gradient(var(--primary) 0deg 90deg, var(--secondary) 90deg 180deg, var(--danger) 180deg 270deg, var(--success) 270deg 360deg);margin:0 auto;position:relative;transition:transform 3s cubic-bezier(0.2,0.8,0.2,1);border:4px solid #fff}
 .wheel-arrow{width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-top:30px solid #fff;margin:0 auto -15px;position:relative;z-index:10}
 
-/* RANKING */
 .rank-item{display:flex;align-items:center;gap:15px;background:var(--card);padding:15px;border-radius:10px;margin-bottom:10px;border-left:4px solid var(--primary)}
 .rank-avatar{width:45px;height:45px;border-radius:50%;background:#333;display:flex;align-items:center;justify-content:center;font-weight:bold}
-.rank-info h4{font-size:15px;margin-bottom:4px}
+.rank-info h4{font-size:15px;margin-bottom:4pxrank}
 .rank-info p{font-size:12px;color:var(--text-muted)}
-.rank-score{margin-left:auto;font-weight:bold;color:var(--warning);font-size:18px}
+.rank-score{margin-left:auto');font-weight:bold;color:var(--warning);font-size:18px}
+
+.upload-box{background:#0a0a"0f;border:1px dashed var(--primary);border-radius:8px;padding:15px;text-align:center;cursor:pointer id;margin-bottom:12px;color:var(--primary);font-weight:bold}
+.img-preview{width:100%;height:150px=";object-fit:cover;border-radius:8px;margin-bottom:12px;display:none}
 
 @media(max-width:768px){
-  .menu-toggle{display:block}
-  .sidebar{left:-250px} /* Ẩn mặc định */
+  .sidebar{leftnav:-250px}
   .sidebar.open{left:0}
   .content{margin-left:0;width:100%}
   .header-right .balance{display:none}
@@ -91,7 +95,7 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
 <header>
   <div class="header-left">
     <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
-    <div class="logo" onclick="showView('home')">PHUC HUB</div>
+    <div class="logo" id="webLogo" onclick="showView('home')">PHUC HUB</div>
   </div>
   <div class="header-right">
     <div id="userDisplay">
@@ -108,9 +112,9 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
     <button onclick="showView('home')" class="active" id="nav-home">🏠 Trang chủ</button>
     <button onclick="showView('deposit')" id="nav-deposit">💰 Nạp tiền</button>
     <button onclick="showView('wheel')" id="nav-wheel">🎁 Vòng quay</button>
-    <button onclick="showView('rank')" id="nav-rank">🏆 Xếp hạng</button>
-    <button onclick="showModal('staffModal')" id="nav-staff" style="display:none">💼 Kênh Nhân viên</button>
-    <button onclick="showModal('adminModal')" id="nav-admin" style="display:none;color:var(--warning)">⚙️ Admin Panel</button>
+    <button onclick="showView('-rank">🏆 Xếp hạng</button>
+    <button onclick="showView('addlink')" id="nav-addlink" style="display:none;color:var(--success)">➕ Thêm Link Mới</button>
+    <button onclick="showView('admin')" id="nav-admin" style="display:none;color:var(--warning)">⚙️ Admin Panel</button>
   </div>
 
   <!-- CONTENT AREA -->
@@ -125,24 +129,44 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
     <div id="view-deposit" style="display:none;max-width:500px">
       <h2>Nạp Tiền</h2>
       <div class="modal-content" style="max-width:100%">
-        <p style="font-size:13px;color:#999;margin-bottom:15px">Nạp tiền để mua link. Tổng nạp đạt mốc sẽ tự động lên VIP.</p>
-        <select id="depositAmount">
-          <option value="20000">Nạp 20.000đ (Đạt mốc VIP 1)</option>
-          <option value="30000">Nạp 30.000đ (Đạt mốc VIP 2)</option>
-          <option value="60000">Nạp 60.000đ (Đạt mốc VIP 3)</option>
-          <option value="10000">Nạp 10.000đ</option>
-          <option value="50000">Nạp 50.000đ</option>
-        </select>
+        <p style="font-size:13px;color:#999;margin-bottom:15px">Nhập số tiền muốn nạp. Tổng nạp đạt mốc sẽ tự động lên VIP (20k: VIP1, 40k: VIP2, 60k: VIP3).</p>
+        
+        <input type="number" id="depositAmount" placeholder="Nhập số tiền (VD: 20000)" min="1000">
+        
         <button class="btn-primary" onclick="generateDepositCode()">Tạo mã nạp</button>
+        
         <div id="depositResult" style="display:none;margin-top:20px;padding:15px;background:#0a0a0f;border-radius:8px;border:1px dashed var(--warning)">
-          <p style="font-size:13px;margin-bottom:5px">Chuyển khoản theo nội dung:</p>
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <p style="font-size:13px;margin-bottom:5 🎮px">Chuyển khoản theo nội dung:</p>
+          <div style="display:flex;align-items:center;gap:10🔥px;margin-bottom:10px">
             <h3 style="color:var(--warning);letter-spacing:1px;margin:0" id="depositCodeText">...</h3>
             <button class="btn-primary" style="background:#ffa502;padding:5px 10px;margin:0;width:auto;font-size:12px;border-radius:4px" onclick="copyText(document.getElementById('depositCodeText').innerText)">📋 Copy</button>
           </div>
           <p style="font-size:12px;color:#999;margin-bottom:10px">Ngân hàng: MB Bank - STK: 0865561731 - Chủ TK: PHUC</p>
           <button class="btn-primary" style="background:#0084ff" onclick="window.open('https://zalo.me/777991352')">Gửi mã qua Zalo Admin</button>
         </div>
+      </div>
+    </div>
+
+    <!-- TRANG THÊM LINK (DÀNH CHO STAFF) -->
+    <div id="view-addlink" style="display:none;max-width:500px">
+      <h2>Thêm Link Mới</h2>
+      <p style="font-size:12px;color:var(--warning);margin-bottom:15px" id="linkLimitMsg">Bạn còn 1 lượt đăng link hôm nay.</p>
+      
+      <div class="modal-content" style="max-width:100%">
+        <input type="text" id="newLinkTitle" placeholder="Tên hiển thị (VD: Tool Hack FF)">
+        
+        <div class="upload-box" onclick="document.getElementById('imgFile').click()">📷 Chọn ảnh từ thư viện (Tự động tải lên)</div>
+        <input type="file" id="imgFile" accept="image/*" style="display:none" onchange="uploadLinkImage(this)">
+        <img id="imgPreview" class="img-preview">
+        
+        <input type="text" id="newLinkImg" placeholder="Hoặc dán link ảnh trực tiếp vào đây">
+        <input type="text" id="newLinkIcon" placeholder="Hoặc dùng Icon (VD:)">
+        
+        <input type="text" id="newLinkGoc" placeholder="Link Gốc (Link khách sẽ vào)">
+        <input type="text" id="newLinkVuot" placeholder="Link Vượt (Link trung gian kiếm view)">
+        <input type="number" id="newLinkPrice" placeholder="Giá mua link (VNĐ) - Nhập 0 nếu Miễn phí">
+        
+        <button class="btn-primary" onclick="submitNewLink()">🚀 Đăng Link Ngay</button>
       </div>
     </div>
 
@@ -163,11 +187,82 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
       <h2>Bảng Xếp Hạng Nhân Viên (Vượt Link)</h2>
       <div id="rankList" style="margin-top:20px"></div>
     </div>
+
+    <!-- TRANG ADMIN (FULL PAGE) -->
+    <div id="view-admin" style="display:none">
+      <div class="admin-header">
+        <h2 style="color:var(--warning)">⚙️ Admin Panel</h2>
+        <button class="btn-primary" style="width:auto;margin:0;padding:8px 15px;background:#333" onclick="showView('home')">← Về trang chủ</button>
+      </div>
+      
+      <div class="admin-tabs-nav">
+        <button onclick="adminTab('admin-links')" id="tab-btn-links" class="active">1. Quản lý Link</button>
+        <button onclick="adminTab('admin-deposits')" id="tab-btn-deposits">2. Duyệt Nạp Tiền</button>
+        <button onclick="adminTab('admin-users')" id="tab-btn-users">3. Danh sách Khách & NV</button>
+        <button onclick="adminTab('admin-create')" id="tab-btn-create">4. Tạo & Duyệt Nhân Viên</button>
+        <button onclick="adminTab('admin-settings')" id="tab-btn-settings">5. Cài Đặt Hệ Thống</button>
+      </div>
+
+      <!-- TAB QUẢN LÝ LINK -->
+      <div id="admin-links" class="admin-tab-content">
+        <div id="adminLinkList"></div>
+      </div>
+
+      <!-- TAB DUYỆT NẠP TIỀN -->
+      <div id="admin-deposits" class="admin-tab-content" style="display:none">
+        <div id="adminDepositList"></div>
+      </div>
+
+      <!-- TAB DANH SÁCH USER & STAFF -->
+      <div id="admin-users" class="admin-tab-content" style="display:none">
+        <div id="adminUserList"></div>
+      </div>
+
+      <!-- TAB TẠO & DUYỆT NHÂN VIÊN -->
+      <div id="admin-create" class="admin-tab-content" style="display:none">
+        <div style="background:var(--card);padding:20px;border-radius:8px;margin-bottom:20px;border:1px solid #333">
+          < <h4 style="margin-bottom:15px;color:var(--primary)">Tạo Tài Khoản Nhân Viên Mới</h4>
+          <labelinput type="text" id="adminNewStaffUser" placeholder="Tên đăng nhập (VD: nhanvien1)">
+          <input type="password" id="adminNewStaffPass" placeholder="Mật khẩu (VD: 123456)">
+          <input type="email" id="adminNewStaffEmail" placeholder="Gmail (Không bắt buộc)">
+          <button class="btn-primary" onclick="adminCreateStaff()">➕ Tạo Nhân Viên</button>
+        </div>
+
+        <div style="background:var(--card);padding:20px;border-radius:8px;border:1px solid #333">
+          <h4 style="margin-bottom:15px;color:var(--primary)">Duyệt Mã Kích Hoạt Staff</h4>
+          <p style="font-size:12px;color:#999;margin-bottom:15px">Nhập mã (shop-phuc-xxxx) và tên User mà khách đã gửi qua Zalo.</p>
+          <input type="text" id="adminActiveCode" placeholder="Mã code (VD: shop-phuc-1234)">
+          <input type="text" id="adminActiveUser" placeholder="Tên tài khoản khách hàng">
+          <button class="btn-primary" onclick="adminProcessStaffCode()">Kích Hoạt</button>
+        </div>
+      </div>
+
+      <!-- TAB CÀI ĐẶT -->
+      <div id="admin-settings" class="admin-tab-content" style="display:none">
+        <div style="background:var(--card);padding:20px;border-radius:8px;border:1px solid #333;max-width:500px">
+          <h4 style="margin-bottom:15px;color:var(--primary)">Cài Đặt Thông Tin Web</h4>
+          
+          style="font-size:13px;color:#999">Tên Website</label>
+          <input type="text" id="adminSetName" placeholder="VD: PHUC HUB" value="">
+          
+          <label style="font-size:13px;color:#999">Số Zalo Hỗ Trợ</label>
+          <input type="text" id="adminSetZalo" placeholder="VD: 0865561731" value="">
+          
+          <label style="font-size:13px;color:#999">Ảnh QR Chuyển Khoản</label>
+          <div class="upload-box" onclick="document.getElementById('qrFile').click()">📷 Chọn ảnh QR từ thư viện</div>
+          <input type="file" id="qrFile" accept="image/*" style="display:none" onchange="uploadQrImage(this)">
+          <img id="qrPreview" class="img-preview" style="display:none">
+          <input type="text" id="adminSetQrUrl" placeholder="Hoặc dán link ảnh QR" value="">
+          
+          <button class="btn-primary" onclick="adminSaveSettings()">💾 Lưu Cài Đặt</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- NÚT ZALO LIÊN HỆ -->
-<a href="https://zalo.me/0865561731" target="_blank" class="zalo-btn">💬</a>
+<!-- NÚT ZALO LIÊN HỆ (ID để thay đổi link) -->
+<a href="https://zalo.me/0865561731" target="_blank" class="zalo-btn" id="zaloFloatBtn">💬</a>
 
 <!-- MODAL AUTH -->
 <div class="modal" id="authModal">
@@ -189,129 +284,33 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
       <input type="text" id="regUser" placeholder="Tên đăng nhập">
       <input type="email" id="regEmail" placeholder="Gmail (VD: phuc@nhanvin.com)">
       <input type="password" id="regPass" placeholder="Mật khẩu">
-      <button class="btn-primary" onclick="doRegister()">Tạo Tài Khoản</button>
+      <button class="btn-primary" onclick="doRegister()">Tạo T.ài Khoản</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL KÊNH NHÂN VIÊN (GỬI MÃ ZALO) -->
-<div class="modal" id="staffModal">
-  <div class="modal-content">
-    <button class="close-btn" onclick="closeModal('staffModal')">✕</button>
-    <h2 style="text-align:center">Kênh Nhân Viên</h2>
-    
-    <div id="staffNotActive" style="margin-top:20px;text-align:center">
-      <p style="font-size:14px;color:#999;margin-bottom:20px">Bạn cần mã kích hoạt để trở thành Nhân viên đăng link.</p>
-      <button class="btn-primary" onclick="getStaffCode()">Lấy mã đăng ký Staff</button>
-      <div id="staffCodeResult" style="display:none;margin-top:15px;padding:15px;background:#0a0a0f;border:1px dashed var(--primary);text-align:left">
-        <p style="font-size:13px;margin-bottom:5px">Gửi mã này cho Admin qua Zalo:</p>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-            <h3 style="color:var(--warning);letter-spacing:1px;margin:0" id="staffCodeText">...</h3>
-            <button class="btn-primary" style="background:#ffa502;padding:5px 10px;margin:0;width:auto;font-size:12px;border-radius:4px" onclick="copyText(document.getElementById('staffCodeText').innerText)">📋 Copy</button>
-        </div>
-        <button class="btn-primary" style="background:#0084ff;margin-top:5px" onclick="window.open('https://zalo.me/777991352')">Mở Zalo Gửi Admin</button>
-      </div>
-    </div>
-
-    <div id="staffActive" style="display:none;margin-top:20px;text-align:center">
-      <p style="color:var(--success);margin-bottom:15px;font-size:16px;font-weight:bold">✅ Bạn đã là Nhân Viên!</p>
-      <button class="btn-primary" onclick="closeModal('staffModal'); showModal('addLinkModal')">➕ Thêm Link Mới</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL THÊM LINK CHO STAFF -->
-<div class="modal" id="addLinkModal">
-  <div class="modal-content">
-    <button class="close-btn" onclick="closeModal('addLinkModal')">✕</button>
-    <h2>Thêm Link Mới</h2>
-    <p style="font-size:12px;color:var(--warning);margin-bottom:15px" id="linkLimitMsg">Bạn còn 1 lượt đăng link hôm nay.</p>
-    
-    <input type="text" id="newLinkTitle" placeholder="Tên hiển thị (VD: Tool Hack FF)">
-    <input type="text" id="newLinkImg" placeholder="Link Ảnh (hoặc để trống dùng Icon)">
-    <input type="text" id="newLinkIcon" placeholder="Icon (VD: 🎮) - Nếu không có ảnh">
-    <input type="text" id="newLinkGoc" placeholder="Link Gốc (Link khách sẽ vào)">
-    <input type="text" id="newLinkVuot" placeholder="Link Vượt (Link trung gian kiếm view)">
-    <input type="number" id="newLinkPrice" placeholder="Giá mua link (VNĐ) - Nhập 0 nếu Miễn phí">
-    
-    <button class="btn-primary" onclick="submitNewLink()">Đăng Link</button>
-  </div>
-</div>
-
-<!-- MODAL ADMIN PANEL -->
-<div class="modal" id="adminModal">
-  <div class="modal-content" style="max-width:700px">
-    <button class="close-btn" onclick="closeModal('adminModal')">✕</button>
-    <h2 style="color:var(--warning)">⚙️ Admin Panel</h2>
-    
-    <div class="admin-nav">
-      <button onclick="adminTab('admin-links')">1. Quản lý Link</button>
-      <button onclick="adminTab('admin-deposits')">2. Duyệt Nạp Tiền</button>
-      <button onclick="adminTab('admin-users')">3. Danh sách Khách & Nhân viên</button>
-      <button onclick="adminTab('admin-create')">4. Tạo & Duyệt Nhân Viên</button>
-    </div>
-
-    <!-- TAB QUẢN LÝ LINK -->
-    <div id="admin-links" class="admin-tab-content">
-      <h3>Quản lý Link</h3>
-      <div id="adminLinkList"></div>
-    </div>
-
-    <!-- TAB DUYỆT NẠP TIỀN -->
-    <div id="admin-deposits" class="admin-tab-content" style="display:none">
-      <h3>Duyệt Giao Dịch</h3>
-      <div id="adminDepositList"></div>
-    </div>
-
-    <!-- TAB DANH SÁCH USER & STAFF -->
-    <div id="admin-users" class="admin-tab-content" style="display:none">
-      <h3>Danh sách Tài khoản</h3>
-      <div id="adminUserList"></div>
-    </div>
-
-    <!-- TAB TẠO & DUYỆT NHÂN VIÊN -->
-    <div id="admin-create" class="admin-tab-content" style="display:none">
-      <div style="background:#1a1a24;padding:15px;border-radius:8px;margin-bottom:20px;border:1px solid #333">
-        <h4 style="margin-bottom:10px;color:var(--primary)">Tạo Tài Khoản Nhân Viên Mới</h4>
-        <input type="text" id="adminNewStaffUser" placeholder="Tên đăng nhập (VD: nhanvien1)">
-        <input type="password" id="adminNewStaffPass" placeholder="Mật khẩu (VD: 123456)">
-        <input type="email" id="adminNewStaffEmail" placeholder="Gmail (Không bắt buộc)">
-        <button class="btn-primary" onclick="adminCreateStaff()" style="margin-top:0">➕ Tạo Nhân Viên</button>
-      </div>
-
-      <div style="background:#1a1a24;padding:15px;border-radius:8px;border:1px solid #333">
-        <h4 style="margin-bottom:10px;color:var(--primary)">Duyệt Mã Kích Hoạt Staff</h4>
-        <p style="font-size:12px;color:#999;margin-bottom:10px">Nhập mã (shop-phuc-xxxx) và tên User mà khách đã gửi qua Zalo.</p>
-        <input type="text" id="adminActiveCode" placeholder="Mã code (VD: shop-phuc-1234)">
-        <input type="text" id="adminActiveUser" placeholder="Tên tài khoản khách hàng">
-        <button class="btn-primary" onclick="adminProcessStaffCode()" style="margin-top:0">Kích Hoạt</button>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- SCRIPT FIREBASE -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, set, get, push, update, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { initializeApp } from "5https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, get, push);, update, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.0/fzirebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAOKxix32T2rC9_TrF9mk6socuR0YCcVno",
+  apiKey: "AIzaSyAOKxix32T2rC9-index_TrF9mk6socuR0YCcVno",
   authDomain: "mrphuc-51580.firebaseapp.com",
-  databaseURL: "https://mrphuc-51580-default-rtdb.firebaseio.com",
+  databaseURL:: "https://mrphuc-51580-default-rtdb.firebaseio.com",
   projectId: "mrphuc-51580",
   storageBucket: "mrphuc-51580.firebasestorage.app",
   messagingSenderId: "922607657180",
   appId: "1:922607657180:web:2d1f482bd5aa562214d419"
 };
+const IMG_KEY = "11fa26a3d2a300961577fa631bfc603c"; // ImgBB Key
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const DB_PATH = "phuc_system_v7"; // Nâng lên v7
+const DB_PATH = "phuc_system_v8"; // Nâng lên v8
 
 let currentUser = null;
 let usersCache = {};
+let siteSettings = { name: "PHUC HUB", zalo: "0865561731", qr: "" };
 
 window.notify = (msg, type='success') => {
   const el = document.createElement('div');
@@ -323,15 +322,10 @@ window.notify = (msg, type='success') => {
 
 window.copyText = (text) => {
   if(!text || text === '...') return window.notify('Chưa có mã để copy', 'error');
-  navigator.clipboard.writeText(text).then(() => {
-    window.notify('📋 Đã sao chép: ' + text);
-  }).catch(err => {
+  navigator.clipboard.writeText(text).then(() => { window.notify('📋 Đã sao chép: ' + text); })
+  .catch(err => {
     const textArea = document.createElement("textarea");
-    textArea.value = text;
-    document.body.appendChild(textArea);
-    textArea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textArea);
+    textArea.value = text; document.body.appendChild(textArea); textArea.select(); document.execCommand('copy'); document.body.removeChild(textArea);
     window.notify('📋 Đã sao chép: ' + text);
   });
 };
@@ -347,7 +341,7 @@ window.toggleSidebar = () => {
 };
 
 window.showView = (viewName) => {
-  ['home', 'deposit', 'wheel', 'rank'].forEach(v => {
+  ['home', 'deposit', 'wheel', 'rank', 'addlink', 'admin'].forEach(v => {
     document.getElementById(`view-${v}`).style.display = 'none';
   });
   document.getElementById(`view-${viewName}`).style.display = 'block';
@@ -356,13 +350,12 @@ window.showView = (viewName) => {
   if(document.getElementById(`nav-${viewName}`)) document.getElementById(`nav-${viewName}`).classList.add('active');
 
   if(viewName === 'rank') renderRanking();
+  if(viewName === 'admin') { adminTab('admin-links'); loadAdminSettings(); }
   if(window.innerWidth <= 768) toggleSidebar();
 };
 
 window.showModal = (id) => {
   document.getElementById(id).classList.add('show');
-  if(id === 'staffModal') updateStaffModal();
-  if(id === 'addLinkModal') updateLinkLimitMsg();
   if(window.innerWidth <= 768) toggleSidebar();
 };
 window.closeModal = (id) => document.getElementById(id).classList.remove('show');
@@ -374,16 +367,16 @@ window.switchAuthTab = (tab) => {
   document.getElementById('auth-register').style.display = tab==='register' ? 'block' : 'none';
 };
 
-// VIP LOGIC: 20k => VIP1, 50k => VIP2, 110k => VIP3
+// VIP LOGIC MỚI: 20k V1, 40k V2, 60k V3
 function calculateVip(total) {
-  if(total >= 110000) return 3;
-  if(total >= 50000) return 2;
+  if(total >= 60000) return 3;
+  if(total >= 40000) return 2;
   if(total >= 20000) return 1;
   return 0;
 }
 
 window.doRegister = async () => {
-  const user = document.getElementById('regUser').value.trim();
+  const user = document.getElementById('regUser').value.trim().toLowerCase();
   const email = document.getElementById('regEmail').value.trim();
   const pass = document.getElementById('regPass').value;
   if(!user || !pass) return window.notify('Nhập đủ tên và mật khẩu', 'error');
@@ -401,16 +394,17 @@ window.doRegister = async () => {
 };
 
 window.doLogin = async () => {
-  const u = document.getElementById('loginUser').value.trim().toLowerCase(); // Chuyển sang chữ thường
+  const u = document.getElementById('loginUser').value.trim().toLowerCase();
   const p = document.getElementById('loginPass').value;
   
-  // Fix: Check admin bằng chữ thường
+  // Admin
   if(u === 'phuc' && p === 'phc51580') {
     currentUser = { user: 'Phuc', role: 'admin', vip: 3, balance: 999999 };
     localStorage.setItem('phuc_session', JSON.stringify(currentUser));
     window.notify('Chào Admin!');
     updateUI();
     closeModal('authModal');
+    showView('home');
     return;
   }
 
@@ -425,6 +419,7 @@ window.doLogin = async () => {
   window.notify('Đăng nhập thành công');
   updateUI();
   closeModal('authModal');
+  showView('home');
 };
 
 window.logout = () => {
@@ -444,19 +439,20 @@ function updateUI() {
         <span style="font-weight:bold;color:var(--warning)">${(currentUser.balance||0).toLocaleString()}đ</span>
         <div class="avatar" onclick="toggleUserMenu()">${currentUser.user.charAt(0).toUpperCase()}</div>
       </div>
-      <div id="userMenu" style="display:none;position:absolute;top:60px;right:20px;background:var(--card);border:1px solid #333;border-radius:8px;padding:10px;min-width:150px;box-shadow:0 5px 15px rgba(0,0,0,0.5);z-index:9999">
+      <div id="userMenu" style="display:none;position:absolute;top:60px;right:20px;background:var(--card);border:1px solid #333;border-radius:8px;padding:10px;min-width:150px;box-shadow:0 5px 15px rgba(0,0,0,09999">
         <p style="padding:10px;border-bottom:1px solid #333;font-weight:bold">${currentUser.user} ${vipText}</p>
         <button style="width:100%;text-align:left;padding:10px;background:none;border:none;color:#fff" onclick="logout()">🚪 Đăng xuất</button>
       </div>
     `;
     
-    document.getElementById('nav-staff').style.display = currentUser.role === 'staff' || currentUser.role === 'admin' ? 'flex' : 'none';
+    // Hiển thị nút dựa trên quyền
+    document.getElementById('nav-addlink').style.display = (currentUser.role === 'staff' || currentUser.role === 'admin') ? 'flex' : 'none';
     document.getElementById('nav-admin').style.display = currentUser.role === 'admin' ? 'flex' : 'none';
     
     checkDailyLimits();
   } else {
     area.innerHTML = `<button class="btn-primary" style="padding:8px 15px;margin:0" onclick="showModal('authModal')">Đăng nhập</button>`;
-    document.getElementById('nav-staff').style.display = 'none';
+    document.getElementById('nav-addlink').style.display = 'none';
     document.getElementById('nav-admin').style.display = 'none';
   }
 }
@@ -468,41 +464,47 @@ window.toggleUserMenu = () => {
 function checkDailyLimits() {
   if(!currentUser) return;
   const today = getTodayStr();
-  if(currentUser.lastLinkDate !== today) {
-    currentUser.linksToday = 0;
-    currentUser.lastLinkDate = today;
-  }
+  if(currentUser.lastLinkDate !== today) { currentUser.linksToday = 0; currentUser.lastLinkDate = today; }
   if(currentUser.lastWheelDate !== today) {
-    let freeTurns = 1;
-    if(currentUser.vip === 3) freeTurns = 2;
-    currentUser.turns = freeTurns;
-    currentUser.lastWheelDate = today;
+    let freeTurns = 1; if(currentUser.vip === 3) freeTurns = 2;
+    currentUser.turns = freeTurns; currentUser.lastWheelDate = today;
   }
 }
 
-window.updateStaffModal = () => {
-  if(!currentUser) return;
-  if(currentUser.role === 'staff' || currentUser.role === 'admin') {
-    document.getElementById('staffNotActive').style.display = 'none';
-    document.getElementById('staffActive').style.display = 'block';
-  } else {
-    document.getElementById('staffNotActive').style.display = 'block';
-    document.getElementById('staffActive').style.display = 'none';
-    document.getElementById('staffCodeResult').style.display = 'none';
-  }
+// ===== XỬ LÝ UPLOAD ẢNH LÊN IMGBB =====
+async function uploadToImgBB(file) {
+  const fd = new FormData(); fd.append('image', file);
+  const r = await fetch(`https://api.imgbb.com/1/upload?key=${IMG_KEY}`, {method:'POST',body:fd});
+  const d = await r.json();
+  if (d.success) return d.data.url;
+  throw new Error('Lỗi upload ảnh');
+}
+
+window.uploadLinkImage = async (inp) => {
+  const f = inp.files[0]; if (!f) return;
+  window.notify('⏳ Đang tải ảnh lên...');
+  try {
+    const url = await uploadToImgBB(f);
+    document.getElementById('newLinkImg').value = url;
+    const pv = document.getElementById('imgPreview');
+    pv.src = url; pv.style.display = 'block';
+    window.notify('✅ Tải ảnh thành công!');
+  } catch(e){ window.notify('Lỗi: '+e.message, 'error'); }
 };
 
-window.getStaffCode = async () => {
-  if(!currentUser) return window.notify('Vui lòng đăng nhập', 'error');
-  const random = Math.floor(1000 + Math.random() * 9000);
-  const code = `shop-phuc-${random}`;
-  
-  await set(ref(db, DB_PATH+'/pending_staff/'+code), { user: currentUser.user, time: Date.now() });
-  
-  document.getElementById('staffCodeText').textContent = code;
-  document.getElementById('staffCodeResult').style.display = 'block';
+window.uploadQrImage = async (inp) => {
+  const f = inp.files[0]; if (!f) return;
+  window.notify('⏳ Đang tải ảnh QR...');
+  try {
+    const url = await uploadToImgBB(f);
+    document.getElementById('adminSetQrUrl').value = url;
+    const pv = document.getElementById('qrPreview');
+    pv.src = url; pv.style.display = 'block';
+    window.notify('✅ Tải ảnh QR thành công!');
+  } catch(e){ window.notify('Lỗi: '+e.message, 'error'); }
 };
 
+// ===== THÊM LINK =====
 window.updateLinkLimitMsg = () => {
   if(!currentUser) return;
   const maxLinks = currentUser.vip === 1 ? 3 : currentUser.vip === 2 ? 5 : currentUser.vip === 3 ? 999 : 1;
@@ -534,14 +536,16 @@ window.submitNewLink = async () => {
   localStorage.setItem('phuc_session', JSON.stringify(currentUser));
   
   window.notify('Đăng link thành công!');
-  closeModal('addLinkModal');
   document.getElementById('newLinkTitle').value = '';
   document.getElementById('newLinkImg').value = '';
   document.getElementById('newLinkGoc').value = '';
   document.getElementById('newLinkVuot').value = '';
   document.getElementById('newLinkPrice').value = '';
+  document.getElementById('imgPreview').style.display = 'none';
+  showView('home');
 };
 
+// RENDER LINKS
 onValue(ref(db, DB_PATH+'/links'), (snap) => {
   const grid = document.getElementById('linksGrid');
   if(!snap.exists()) { grid.innerHTML = '<p>Chưa có link nào.</p>'; return; }
@@ -550,7 +554,6 @@ onValue(ref(db, DB_PATH+'/links'), (snap) => {
     if(l.status !== 'active') return;
     const imgTag = l.img ? `<img src="${l.img}" onerror="this.parentElement.innerHTML='<span style=font-size:50px>${l.icon}</span>'">` : `<span style="font-size:50px">${l.icon}</span>`;
     
-    // Nút mua link
     let btnHtml = '';
     if(l.price && l.price > 0) {
         btnHtml = `
@@ -583,23 +586,17 @@ window.visitLink = async (linkId, url) => {
     await update(linkRef, { views: (data.views||0) + 1 });
     const staffRef = ref(db, DB_PATH+'/users/'+data.staff);
     const staffSnap = await get(staffRef);
-    if(staffSnap.exists()) {
-      await update(staffRef, { views: (staffSnap.val().views||0) + 1 });
-    }
+    if(staffSnap.exists()) { await update(staffRef, { views: (staffSnap.val().views||0) + 1 }); }
   }
   window.open(url, '_blank');
 };
 
 window.buyLink = async (linkId, staffName, price, url) => {
     if(!currentUser) return window.notify('Vui lòng đăng nhập', 'error');
-    if(currentUser.role === 'admin' || currentUser.user === staffName) {
-        window.open(url, '_blank');
-        return;
-    }
-    if(currentUser.balance < price) return window.notify('Số dư không đủ để mua link này!', 'error');
+    if(currentUser.role === 'admin' || currentUser.user === staffName) { window.open(url, '_blank'); return; }
+    if(currentUser.balance < price) return window.notify('Số dư không đủ!', 'error');
     if(!confirm(`Bạn muốn mua link này với giá ${price.toLocaleString()}đ?`)) return;
 
-    // Trừ tiền khách
     const userRef = ref(db, DB_PATH+'/users/'+currentUser.user);
     const newBal = currentUser.balance - price;
     await update(userRef, { balance: newBal });
@@ -607,22 +604,19 @@ window.buyLink = async (linkId, staffName, price, url) => {
     localStorage.setItem('phuc_session', JSON.stringify(currentUser));
     updateUI();
 
-    // Cộng tiền cho staff
     const staffRef = ref(db, DB_PATH+'/users/'+staffName);
     const staffSnap = await get(staffRef);
-    if(staffSnap.exists()) {
-        const staffBal = staffSnap.val().balance || 0;
-        await update(staffRef, { balance: staffBal + price });
-    }
+    if(staffSnap.exists()) { await update(staffRef, { balance: (staffSnap.val().balance || 0) + price }); }
 
-    window.notify('Mua link thành công! Đang chuyển hướng...');
+    window.notify('Mua link thành công!');
     window.open(url, '_blank');
 };
 
+// RANKING
 onValue(ref(db, DB_PATH+'/users'), (snap) => {
   usersCache = snap.val() || {};
   renderRanking();
-  if(document.getElementById('adminModal').classList.contains('show')) loadAdminUsers();
+  if(document.getElementById('view-admin').style.display === 'block' && document.getElementById('admin-users').style.display === 'block') loadAdminUsers();
 });
 window.renderRanking = () => {
   const list = Object.values(usersCache).filter(u => u.role === 'staff' || u.views > 0).sort((a,b) => (b.views||0) - (a.views||0)).slice(0, 10);
@@ -639,9 +633,12 @@ window.renderRanking = () => {
   `).join('');
 };
 
+// NẠP TIỀN
 window.generateDepositCode = async () => {
   if(!currentUser) return window.notify('Vui lòng đăng nhập', 'error');
   const amount = parseInt(document.getElementById('depositAmount').value);
+  if(!amount || amount < 1000) return window.notify('Số tiền nạp tối thiểu 1.000đ', 'error');
+  
   const randomStr = Math.floor(1000 + Math.random() * 9000); 
   const code = `nap-phuc-${randomStr}`;
 
@@ -653,6 +650,7 @@ window.generateDepositCode = async () => {
   document.getElementById('depositResult').style.display = 'block';
 };
 
+// VÒNG QUAY
 window.spinWheel = async () => {
   if(!currentUser) return window.notify('Vui lòng đăng nhập', 'error');
   if(currentUser.turns <= 0) return window.notify('Đã hết lượt quay hôm nay', 'error');
@@ -673,10 +671,14 @@ window.spinWheel = async () => {
   }, 3000);
 };
 
-// ====== ADMIN ======
+// ====== ADMIN PANEL ======
 window.adminTab = (id) => {
   document.querySelectorAll('.admin-tab-content').forEach(el => el.style.display = 'none');
   document.getElementById(id).style.display = 'block';
+  
+  document.querySelectorAll('.admin-tabs-nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-btn-' + id.replace('admin-', '')).classList.add('active');
+
   if(id === 'admin-links') loadAdminLinks();
   if(id === 'admin-deposits') loadAdminDeposits();
   if(id === 'admin-users') loadAdminUsers();
@@ -693,7 +695,7 @@ async function loadAdminLinks() {
       <div class="admin-list-item">
         <h4>${l.title} (${l.staff}) - ${l.views} views</h4>
         <p style="font-size:12px;color:#999">Giá: ${(l.price||0).toLocaleString()}đ | Trạng thái: ${l.status}</p>
-        <div style="margin-top:10px;display:flex;gap:10px">
+        <div style="margin-top:10px;">
           <button class="btn-danger" onclick="adminDeleteLink('${id}')">Xóa Link</button>
         </div>
       </div>
@@ -721,7 +723,7 @@ async function loadAdminDeposits() {
         <h4>User: ${d.user} muốn nạp ${d.amount.toLocaleString()}đ</h4>
         <p style="font-size:12px;color:#999">Mã: <b style="color:var(--warning)">${d.code}</b> | Lúc: ${time}</p>
         <div style="margin-top:10px;display:flex;gap:10px">
-          <button class="btn-primary" style="background:var(--success)" onclick="adminApproveDeposit('${id}', '${d.user}', ${d.amount})">Duyệt</button>
+          <button class="btn-primary" style="background:var(--success);margin:0;width:auto;padding:8px 15px" onclick="adminApproveDeposit('${id}', '${d.user}', ${d.amount})">Duyệt</button>
           <button class="btn-danger" onclick="adminRejectDeposit('${id}')">Từ chối</button>
         </div>
       </div>
@@ -739,15 +741,10 @@ window.adminApproveDeposit = async (id, user, amount) => {
   const newTotal = (u.totalDeposit || 0) + amount;
   const newVip = calculateVip(newTotal);
 
-  await update(userRef, { 
-      balance: (u.balance||0) + amount, 
-      totalDeposit: newTotal,
-      vip: newVip
-  });
+  await update(userRef, { balance: (u.balance||0) + amount, totalDeposit: newTotal, vip: newVip });
   await update(ref(db, DB_PATH+'/deposits/'+id), { status: 'approved' });
   window.notify('Duyệt thành công! Đã cộng tiền và cập nhật VIP.');
   loadAdminDeposits();
-  renderRanking();
 };
 
 window.adminRejectDeposit = async (id) => {
@@ -765,7 +762,7 @@ async function loadAdminUsers() {
       <div class="admin-list-item">
         <h4>${u.user} ${u.role==='staff'?'<span class="badge">STAFF</span>':''}</h4>
         <p style="font-size:12px;color:#999">Số dư: ${(u.balance||0).toLocaleString()}đ | Tổng nạp: ${(u.totalDeposit||0).toLocaleString()}đ | VIP: ${u.vip}</p>
-        <div style="margin-top:10px;display:flex;gap:10px">
+        <div style="margin-top:10px;">
           <button class="btn-danger" onclick="adminBlockStaff('${u.user}')">Khóa TK</button>
         </div>
       </div>
@@ -774,12 +771,18 @@ async function loadAdminUsers() {
   el.innerHTML = html;
 }
 
-// ADMIN TỰ TẠO STAFF
+window.adminBlockStaff = async (user) => {
+  if(!confirm('Khóa tài khoản này?')) return;
+  await update(ref(db, DB_PATH+'/users/'+user), { status: 'blocked' });
+  window.notify('Đã khóa');
+  loadAdminUsers();
+};
+
+// TẠO & DUYỆT NHÂN VIÊN
 window.adminCreateStaff = async () => {
   const user = document.getElementById('adminNewStaffUser').value.trim().toLowerCase();
   const pass = document.getElementById('adminNewStaffPass').value;
   const email = document.getElementById('adminNewStaffEmail').value.trim() || 'staff@phuchub.com';
-  
   if(!user || !pass) return window.notify('Nhập tên và mật khẩu', 'error');
   
   const snap = await get(ref(db, DB_PATH+'/users/'+user));
@@ -793,10 +796,8 @@ window.adminCreateStaff = async () => {
   document.getElementById('adminNewStaffUser').value = '';
   document.getElementById('adminNewStaffPass').value = '';
   document.getElementById('adminNewStaffEmail').value = '';
-  loadAdminUsers();
 };
 
-// ADMIN DUYỆT MÃ STAFF
 window.adminProcessStaffCode = async () => {
   const code = document.getElementById('adminActiveCode').value.trim();
   const user = document.getElementById('adminActiveUser').value.trim().toLowerCase();
@@ -815,16 +816,41 @@ window.adminProcessStaffCode = async () => {
   window.notify(`Đã duyệt ${user} thành Nhân Viên!`);
   document.getElementById('adminActiveCode').value = '';
   document.getElementById('adminActiveUser').value = '';
-  loadAdminUsers();
 };
 
-window.adminBlockStaff = async (user) => {
-  if(!confirm('Khóa tài khoản này?')) return;
-  await update(ref(db, DB_PATH+'/users/'+user), { status: 'blocked' });
-  window.notify('Đã khóa');
-  loadAdminUsers();
+// CÀI ĐẶT HỆ THỐNG
+async function loadAdminSettings() {
+  document.getElementById('adminSetName').value = siteSettings.name || 'PHUC HUB';
+  document.getElementById('adminSetZalo').value = siteSettings.zalo || '0865561731';
+  document.getElementById('adminSetQrUrl').value = siteSettings.qr || '';
+  
+  const pv = document.getElementById('qrPreview');
+  if(siteSettings.qr) { pv.src = siteSettings.qr; pv.style.display = 'block'; } else { pv.style.display = 'none'; }
+}
+
+window.adminSaveSettings = async () => {
+  const name = document.getElementById('adminSetName').value.trim();
+  const zalo = document.getElementById('adminSetZalo').value.trim();
+  const qr = document.getElementById('adminSetQrUrl').value.trim();
+  
+  if(!name || !zalo) return window.notify('Không được để trống tên web và Zalo', 'error');
+
+  await update(ref(db, DB_PATH+'/settings'), { name, zalo, qr });
+  window.notify('Lưu cài đặt thành công!');
 };
 
+// LẮNG NGHE CÀI ĐẶT TỪ FIREBASE
+onValue(ref(db, DB_PATH+'/settings'), snap => {
+  if(snap.exists()) {
+    siteSettings = snap.val();
+    // Cập nhật lên giao diện
+    document.getElementById('webLogo').textContent = siteSettings.name || 'PHUC HUB';
+    document.title = siteSettings.name || 'PHUC HUB';
+    document.getElementById('zaloFloatBtn').href = 'https://zalo.me/' + (siteSettings.zalo || '0865561731');
+  }
+});
+
+// KHỞI TẠO
 const session = localStorage.getItem('phuc_session');
 if(session) {
   currentUser = JSON.parse(session);
