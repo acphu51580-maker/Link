@@ -40,30 +40,30 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
 }
 
 /* GRID LINKS */
-.grid-links{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.grid-links{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
 
-/* CARD LINK */
+/* CARD LINK (PC) */
 .link-card{background:var(--card);border-radius:12px;overflow:hidden;border:1px solid #333;transition:0.3s;display:flex;flex-direction:column}
 .link-card:hover{border-color:var(--primary);box-shadow:0 10px 20px rgba(106,17,203,0.2)}
-.link-card .img-area{height:160px;background:#111;display:flex;align-items:center;justify-content:center;font-size:60px;position:relative;overflow:hidden}
+.link-card .img-area{height:150px;background:#111;display:flex;align-items:center;justify-content:center;font-size:60px;position:relative;overflow:hidden}
 .link-card .img-area img{width:100%;height:100%;object-fit:cover}
-.link-card .info{padding:15px;display:flex;flex-direction:column;gap:8px}
-.link-card h3{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.link-card p{font-size:12px;color:var(--text-muted)}
+.link-card .info{padding:15px;display:flex;flex-direction:column;gap:8px;flex:1}
+.link-card h3{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;}
+.link-card p{font-size:12px;color:var(--text-muted);text-align:center;}
 .link-card button{width:100%;padding:10px;border-radius:6px;font-size:13px;text-align:center}
-.btn-view{background:#333;color:#fff}
+.btn-view{background:#333;color:#fff;margin-bottom:5px;}
 .btn-buy{background:var(--success);color:#fff}
 .btn-buy-price{background:var(--warning);color:#000}
 
-/* MOBILE: 3 CỘT 1 HÀNG */
+/* MOBILE: 3 CỘT 1 HÀNG - TO & DÀI HƠN */
 @media(max-width:768px){
   .grid-links{grid-template-columns:repeat(3, 1fr);gap:8px}
-  .link-card .img-area{height:85px;font-size:35px}
-  .link-card .info{padding:6px;gap:4px}
-  .link-card h3{font-size:11px;white-space:normal;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;text-align:center}
-  .link-card p{display:none} /* Ẩn tên người đăng cho gọn */
-  .link-card button{padding:5px 2px;font-size:9px;border-radius:4px}
-  .btn-view, .btn-buy-price{margin-bottom:2px}
+  .link-card .img-area{height:110px;font-size:40px}
+  .link-card .info{padding:8px 6px;gap:6px}
+  .link-card h3{font-size:11.5px;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-align:center;min-height:32px;}
+  .link-card p{display:none} /* Ẩn người đăng cho gọn */
+  .link-card button{padding:6px 2px;font-size:10px;border-radius:4px}
+  .btn-view{margin-bottom:4px;}
 }
 
 /* FLOATING ZALO */
@@ -107,20 +107,21 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
 
 <header>
   <div class="header-left">
-    <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
-    <div class="logo" id="webLogo" onclick="showView('home')">PHUC HUB</div>
+    <div class="menu-toggle" onclick="toggleSidebar()">:☰</div>
+    <div class="logo" id="webLogo" onclick="showView('home')">PHUC HUB</div500>
   </div>
   <div class="header-right">
     <div id="userDisplay">
-      <button class="btn-primary" style="padding:8px 15px;margin:0" onclick="showModal('authModal')">Đăng nhập</button>
+      <button class="btn-primary" style="padding:8pxpx 15px;margin:0" onclick="showModal('authModal')">Đăng nhập</button>
     </div>
-  </div>
+  </div">
+>
 </header>
 
 <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
 <div class="main-container">
-  <!-- SIDEBAR -->
+       <!-- SIDEBAR -->
   <div class="sidebar" id="sidebar">
     <button onclick="showView('home')" class="active" id="nav-home">🏠 Trang chủ</button>
     <button onclick="showView('deposit')" id="nav-deposit">💰 Nạp tiền</button>
@@ -159,8 +160,7 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
     </div>
 
     <!-- TRANG THÊM LINK (DÀNH CHO STAFF) -->
-    <div id="view-addlink" style="display:none;max-width:500px">
-      <h2>Thêm Link Mới</h2>
+    <div id="view-addlink" style="display:none;max-width <h2>Thêm Link Mới</h2>
       <p style="font-size:12px;color:var(--warning);margin-bottom:15px" id="linkLimitMsg">Bạn còn 1 lượt đăng link hôm nay.</p>
       <div class="modal-content" style="max-width:100%">
         <input type="text" id="newLinkTitle" placeholder="Tên hiển thị (VD: Tool Hack FF)">
@@ -304,7 +304,7 @@ const IMG_KEY = "11fa26a3d2a300961577fa631bfc603c";
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const DB_PATH = "phuc_system_v10"; // Nâng lên v10
+const DB_PATH = "phuc_system_v10"; // Giữ nguyên v10 để không mất data
 
 let currentUser = null;
 let usersCache = {};
@@ -556,7 +556,7 @@ onValue(ref(db, DB_PATH+'/links'), (snap) => {
     let btnHtml = '';
     if(l.price && l.price > 0) {
         btnHtml = `
-            <button class="btn-view" onclick="visitLink('${id}', '${l.linkVuot}')">Xem Vượt Link</button>
+            <button class="btn-view" onclick="visitLink('${id}', '${l.linkVuot}')">Vượt Link</button>
             <button class="btn-buy-price" onclick="buyLink('${id}', '${l.staff}', ${l.price}, '${l.linkGoc}')">Mua Link: ${l.price.toLocaleString()}đ</button>
         `;
     } else {
@@ -594,7 +594,9 @@ window.buyLink = async (linkId, staffName, price, url) => {
     if(!currentUser) return window.notify('Vui lòng đăng nhập', 'error');
     if(currentUser.role === 'admin' || currentUser.user === staffName) { window.open(url, '_blank'); return; }
     if(currentUser.balance < price) return window.notify('Số dư không đủ!', 'error');
-    if(!confirm(`Bạn muốn mua link này với giá ${price.toLocaleString()}đ?`)) return;
+    
+    // Hiện xác nhận trước khi mua
+    if(!confirm(`Bạn có chắc chắn muốn mua link gốc này với giá ${price.toLocaleString()}đ?`)) return;
 
     const userRef = ref(db, DB_PATH+'/users/'+currentUser.user);
     const newBal = currentUser.balance - price;
@@ -607,7 +609,7 @@ window.buyLink = async (linkId, staffName, price, url) => {
     const staffSnap = await get(staffRef);
     if(staffSnap.exists()) { await update(staffRef, { balance: (staffSnap.val().balance || 0) + price }); }
 
-    window.notify('Mua link thành công!');
+    window.notify('Mua link thành công! Đang vào link gốc...');
     window.open(url, '_blank');
 };
 
@@ -805,21 +807,21 @@ window.adminCreateStaff = async () => {
 
 window.adminProcessStaffCode = async () => {
   const code = document.getElementById('adminActiveCode').value.trim();
-  const user = document.getElementById('adminActiveUser').value.trim().toLowerCase();
-  if(!code || !user) return window.notify('Nhập đủ mã và tên user', 'error');
+ ân const user = document.getElementById('adminActiveUser').value.trim().toLowerCase();
+  if(!code || !user) return Vi window.notify('Nhập đủ mã và tênên user', 'error');
 
-  const codeSnap = await get(ref(db, DB_PATH+'/pending_staff/'+code));
-  if(!codeSnap.exists()) return window.notify('Mã không hợp lệ hoặc đã dùng', 'error');
+  const codeSnap = await get(ref(db, DB_PATH+'/pending_staff/'!+code));
+  if(!codeSnap.exists()) return window.notify('Mã không hợp lệ hoặc đã dùng',`);
+ 'error');
 
   const userRef = ref(db, DB_PATH+'/users/'+user);
-  const userSnap = await get(userRef);
+  const userSnap = await get(user Ref);
   if(!userSnap.exists()) return window.notify('User không tồn tại trên hệ thống', 'error');
 
   await update(userRef, { role: 'staff' });
   await remove(ref(db, DB_PATH+'/pending_staff/'+code));
   
-  window.notify(`Đã duyệt ${user} thành Nhân Viên!`);
-  document.getElementById('adminActiveCode').value = '';
+  window.notify(`Đã duyệt ${user} thành Nh document.getElementById('adminActiveCode').value = '';
   document.getElementById('adminActiveUser').value = '';
 };
 
@@ -854,7 +856,7 @@ onValue(ref(db, DB_PATH+'/settings'), snap => {
   }
 });
 
-// LOGIC TỰ ĐỘNG LƯU ĐĂNG NHẬP KHI TẢI LẠI TRANG
+// TỰ ĐỘNG LƯU ĐĂNG NHẬP
 const session = localStorage.getItem('phuc_session');
 if(session) {
   currentUser = JSON.parse(session);
@@ -871,7 +873,7 @@ if(session) {
         updateUI();
       }
     }).catch(err => {
-      updateUI(); // Lỗi mạng thì vẫn dùng tạm session cũ
+      updateUI(); 
     });
   }
 } else {
