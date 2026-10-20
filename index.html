@@ -10,41 +10,49 @@
 body{background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
 a{text-decoration:none;color:inherit}
 button{cursor:pointer;border:none;outline:none;font-weight:600;transition:0.3s}
-button:hover{opacity:0.8;transform:translateY(-2px)}
+button:hover{opacity:0.8}
 input,select{width:100%;padding:12px;background:#0a0a0f;border:1px solid #333;border-radius:8px;color:#fff;margin-bottom:12px;font-size:14px}
 input:focus{border-color:var(--primary)}
 
 /* HEADER */
-header{background:rgba(15,15,19,0.9);backdrop-filter:blur(10px);padding:15px 30px;display:flex;justify-content:space-between;align-items:center;position:fixed;width:100%;top:0;z-index:100;border-bottom:1px solid #222}
+header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20px;display:flex;justify-content:space-between;align-items:center;position:fixed;width:100%;top:0;z-index:100;border-bottom:1px solid #222;height:65px}
+.header-left{display:flex;align-items:center;gap:15px}
+.menu-toggle{font-size:24px;cursor:pointer;display:none}
 .logo{font-size:20px;font-weight:800;background:linear-gradient(to right,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer}
 .header-right{display:flex;align-items:center;gap:15px}
 .avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-weight:bold;cursor:pointer;font-size:18px}
 
 /* MAIN LAYOUT */
-.main-container{padding-top:80px;display:flex;flex:1}
-.sidebar{width:250px;background:var(--card);padding:20px;border-right:1px solid #222;position:fixed;top:80px;bottom:0;left:0;display:flex;flex-direction:column;gap:10px}
+.main-container{padding-top:65px;display:flex;flex:1;position:relative}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:99;display:none}
+.overlay.show{display:block}
+
+.sidebar{width:250px;background:var(--card);padding:20px;border-right:1px solid #222;position:fixed;top:65px;bottom:0;left:0;display:flex;flex-direction:column;gap:10px;z-index:100;transition:0.3s}
 .sidebar button{width:100%;padding:12px;text-align:left;background:transparent;color:#fff;border-radius:8px;font-size:15px;display:flex;align-items:center;gap:10px}
 .sidebar button:hover,.sidebar button.active{background:var(--primary)}
-.content{margin-left:250px;padding:30px;flex:1}
+.content{margin-left:250px;padding:20px;flex:1;width:calc(100% - 250px)}
 .grid-links{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
 
 /* CARD LINK */
 .link-card{background:var(--card);border-radius:12px;overflow:hidden;border:1px solid #333;transition:0.3s;display:flex;flex-direction:column}
-.link-card:hover{border-color:var(--primary);transform:translateY(-5px);box-shadow:0 10px 20px rgba(106,17,203,0.2)}
+.link-card:hover{border-color:var(--primary);box-shadow:0 10px 20px rgba(106,17,203,0.2)}
 .link-card .img-area{height:160px;background:#111;display:flex;align-items:center;justify-content:center;font-size:60px;position:relative;overflow:hidden}
 .link-card .img-area img{width:100%;height:100%;object-fit:cover}
-.link-card .info{padding:15px}
-.link-card h3{font-size:16px;margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.link-card p{font-size:12px;color:var(--text-muted);margin-bottom:15px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.link-card button{width:100%;padding:10px;background:var(--secondary);color:#fff;border-radius:6px}
+.link-card .info{padding:15px;display:flex;flex-direction:column;gap:8px}
+.link-card h3{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.link-card p{font-size:12px;color:var(--text-muted)}
+.link-card button{width:100%;padding:10px;border-radius:6px;font-size:13px}
+.btn-view{background:#333;color:#fff}
+.btn-buy{background:var(--success);color:#fff}
+.btn-buy-price{background:var(--warning);color:#000}
 
 /* FLOATING ZALO */
-.zalo-btn{position:fixed;bottom:30px;right:30px;width:60px;height:60px;background:#0084ff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;box-shadow:0 5px 15px rgba(0,132,255,0.4);z-index:100}
+.zalo-btn{position:fixed;bottom:20px;right:20px;width:55px;height:55px;background:#0084ff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 5px 15px rgba(0,132,255,0.4);z-index:90}
 
 /* MODAL & PANELS */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;z-index:999;padding:20px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;z-index:999;padding:15px}
 .modal.show{display:flex}
-.modal-content{background:var(--card);border-radius:16px;padding:25px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;border:1px solid #333;position:relative}
+.modal-content{background:var(--card);border-radius:16px;padding:20px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;border:1px solid #333;position:relative}
 .close-btn{position:absolute;top:15px;right:15px;background:transparent;color:#999;font-size:24px}
 .tab-header{display:flex;border-bottom:1px solid #333;margin-bottom:20px;gap:10px;overflow-x:auto}
 .tab-header button{padding:10px 15px;background:transparent;color:#999;border-bottom:2px solid transparent;white-space:nowrap}
@@ -70,9 +78,10 @@ header{background:rgba(15,15,19,0.9);backdrop-filter:blur(10px);padding:15px 30p
 .rank-score{margin-left:auto;font-weight:bold;color:var(--warning);font-size:18px}
 
 @media(max-width:768px){
-  .sidebar{width:100%;top:auto;bottom:0;flex-direction:row;overflow-x:auto;padding:10px;border-top:1px solid #222;border-right:none;z-index:100;justify-content:space-between}
-  .sidebar button{width:auto;flex-direction:column;font-size:11px;padding:5px;text-align:center;gap:5px}
-  .content{margin-left:0;padding-bottom:80px}
+  .menu-toggle{display:block}
+  .sidebar{left:-250px} /* Ẩn mặc định */
+  .sidebar.open{left:0}
+  .content{margin-left:0;width:100%}
   .header-right .balance{display:none}
 }
 </style>
@@ -80,13 +89,18 @@ header{background:rgba(15,15,19,0.9);backdrop-filter:blur(10px);padding:15px 30p
 <body>
 
 <header>
-  <div class="logo" onclick="showView('home')">PHUC HUB</div>
+  <div class="header-left">
+    <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
+    <div class="logo" onclick="showView('home')">PHUC HUB</div>
+  </div>
   <div class="header-right">
     <div id="userDisplay">
       <button class="btn-primary" style="padding:8px 15px;margin:0" onclick="showModal('authModal')">Đăng nhập</button>
     </div>
   </div>
 </header>
+
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
 <div class="main-container">
   <!-- SIDEBAR -->
@@ -109,19 +123,23 @@ header{background:rgba(15,15,19,0.9);backdrop-filter:blur(10px);padding:15px 30p
 
     <!-- NẠP TIỀN -->
     <div id="view-deposit" style="display:none;max-width:500px">
-      <h2>Nạp Tiền / Nâng VIP</h2>
+      <h2>Nạp Tiền</h2>
       <div class="modal-content" style="max-width:100%">
-        <p style="font-size:13px;color:#999;margin-bottom:15px">Nhập số tiền muốn nạp (10k, 30k, 50k) để nhận mã VIP.</p>
+        <p style="font-size:13px;color:#999;margin-bottom:15px">Nạp tiền để mua link. Tổng nạp đạt mốc sẽ tự động lên VIP.</p>
         <select id="depositAmount">
-          <option value="10000">Nạp 10.000đ (Lên VIP 1)</option>
-          <option value="30000">Nạp 30.000đ (Lên VIP 2)</option>
-          <option value="50000">Nạp 50.000đ (Lên VIP 3)</option>
-          <option value="20000">Nạp 20.000đ (Không lên VIP)</option>
+          <option value="20000">Nạp 20.000đ (Đạt mốc VIP 1)</option>
+          <option value="30000">Nạp 30.000đ (Đạt mốc VIP 2)</option>
+          <option value="60000">Nạp 60.000đ (Đạt mốc VIP 3)</option>
+          <option value="10000">Nạp 10.000đ</option>
+          <option value="50000">Nạp 50.000đ</option>
         </select>
         <button class="btn-primary" onclick="generateDepositCode()">Tạo mã nạp</button>
         <div id="depositResult" style="display:none;margin-top:20px;padding:15px;background:#0a0a0f;border-radius:8px;border:1px dashed var(--warning)">
           <p style="font-size:13px;margin-bottom:5px">Chuyển khoản theo nội dung:</p>
-          <h3 style="color:var(--warning);letter-spacing:1px;margin-bottom:10px" id="depositCodeText">...</h3>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <h3 style="color:var(--warning);letter-spacing:1px;margin:0" id="depositCodeText">...</h3>
+            <button class="btn-primary" style="background:#ffa502;padding:5px 10px;margin:0;width:auto;font-size:12px;border-radius:4px" onclick="copyText(document.getElementById('depositCodeText').innerText)">📋 Copy</button>
+          </div>
           <p style="font-size:12px;color:#999;margin-bottom:10px">Ngân hàng: MB Bank - STK: 0865561731 - Chủ TK: PHUC</p>
           <button class="btn-primary" style="background:#0084ff" onclick="window.open('https://zalo.me/777991352')">Gửi mã qua Zalo Admin</button>
         </div>
@@ -187,8 +205,11 @@ header{background:rgba(15,15,19,0.9);backdrop-filter:blur(10px);padding:15px 30p
       <button class="btn-primary" onclick="getStaffCode()">Lấy mã đăng ký Staff</button>
       <div id="staffCodeResult" style="display:none;margin-top:15px;padding:15px;background:#0a0a0f;border:1px dashed var(--primary);text-align:left">
         <p style="font-size:13px;margin-bottom:5px">Gửi mã này cho Admin qua Zalo:</p>
-        <h3 style="color:var(--warning);letter-spacing:1px" id="staffCodeText">...</h3>
-        <button class="btn-primary" style="background:#0084ff;margin-top:10px" onclick="window.open('https://zalo.me/777991352')">Mở Zalo Gửi Admin</button>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <h3 style="color:var(--warning);letter-spacing:1px;margin:0" id="staffCodeText">...</h3>
+            <button class="btn-primary" style="background:#ffa502;padding:5px 10px;margin:0;width:auto;font-size:12px;border-radius:4px" onclick="copyText(document.getElementById('staffCodeText').innerText)">📋 Copy</button>
+        </div>
+        <button class="btn-primary" style="background:#0084ff;margin-top:5px" onclick="window.open('https://zalo.me/777991352')">Mở Zalo Gửi Admin</button>
       </div>
     </div>
 
@@ -211,6 +232,7 @@ header{background:rgba(15,15,19,0.9);backdrop-filter:blur(10px);padding:15px 30p
     <input type="text" id="newLinkIcon" placeholder="Icon (VD: 🎮) - Nếu không có ảnh">
     <input type="text" id="newLinkGoc" placeholder="Link Gốc (Link khách sẽ vào)">
     <input type="text" id="newLinkVuot" placeholder="Link Vượt (Link trung gian kiếm view)">
+    <input type="number" id="newLinkPrice" placeholder="Giá mua link (VNĐ) - Nhập 0 nếu Miễn phí">
     
     <button class="btn-primary" onclick="submitNewLink()">Đăng Link</button>
   </div>
@@ -224,10 +246,9 @@ header{background:rgba(15,15,19,0.9);backdrop-filter:blur(10px);padding:15px 30p
     
     <div class="admin-nav">
       <button onclick="adminTab('admin-links')">1. Quản lý Link</button>
-      <button onclick="adminTab('admin-deposits')">2. Duyệt Nạp Tiền / VIP</button>
-      <button onclick="adminTab('admin-staffs')">3. Quản lý & Tạo Nhân Viên</button>
-      <button onclick="adminTab('admin-activate')">4. Duyệt Mã Kích Hoạt Staff</button>
-      <button onclick="adminTab('admin-settings')">5. Cài Đặt Hệ Thống</button>
+      <button onclick="adminTab('admin-deposits')">2. Duyệt Nạp Tiền</button>
+      <button onclick="adminTab('admin-users')">3. Danh sách Khách & Nhân viên</button>
+      <button onclick="adminTab('admin-create')">4. Tạo & Duyệt Nhân Viên</button>
     </div>
 
     <!-- TAB QUẢN LÝ LINK -->
@@ -242,8 +263,14 @@ header{background:rgba(15,15,19,0.9);backdrop-filter:blur(10px);padding:15px 30p
       <div id="adminDepositList"></div>
     </div>
 
-    <!-- TAB QUẢN LÝ NHÂN VIÊN (TỰ TẠO) -->
-    <div id="admin-staffs" class="admin-tab-content" style="display:none">
+    <!-- TAB DANH SÁCH USER & STAFF -->
+    <div id="admin-users" class="admin-tab-content" style="display:none">
+      <h3>Danh sách Tài khoản</h3>
+      <div id="adminUserList"></div>
+    </div>
+
+    <!-- TAB TẠO & DUYỆT NHÂN VIÊN -->
+    <div id="admin-create" class="admin-tab-content" style="display:none">
       <div style="background:#1a1a24;padding:15px;border-radius:8px;margin-bottom:20px;border:1px solid #333">
         <h4 style="margin-bottom:10px;color:var(--primary)">Tạo Tài Khoản Nhân Viên Mới</h4>
         <input type="text" id="adminNewStaffUser" placeholder="Tên đăng nhập (VD: nhanvien1)">
@@ -251,26 +278,16 @@ header{background:rgba(15,15,19,0.9);backdrop-filter:blur(10px);padding:15px 30p
         <input type="email" id="adminNewStaffEmail" placeholder="Gmail (Không bắt buộc)">
         <button class="btn-primary" onclick="adminCreateStaff()" style="margin-top:0">➕ Tạo Nhân Viên</button>
       </div>
-      <h3>Danh sách Nhân viên</h3>
-      <div id="adminStaffList"></div>
+
+      <div style="background:#1a1a24;padding:15px;border-radius:8px;border:1px solid #333">
+        <h4 style="margin-bottom:10px;color:var(--primary)">Duyệt Mã Kích Hoạt Staff</h4>
+        <p style="font-size:12px;color:#999;margin-bottom:10px">Nhập mã (shop-phuc-xxxx) và tên User mà khách đã gửi qua Zalo.</p>
+        <input type="text" id="adminActiveCode" placeholder="Mã code (VD: shop-phuc-1234)">
+        <input type="text" id="adminActiveUser" placeholder="Tên tài khoản khách hàng">
+        <button class="btn-primary" onclick="adminProcessStaffCode()" style="margin-top:0">Kích Hoạt</button>
+      </div>
     </div>
 
-    <!-- TAB DUYỆT MÃ KÍCH HOẠT -->
-    <div id="admin-activate" class="admin-tab-content" style="display:none">
-      <h3>Duyệt Mã Kích Hoạt Staff</h3>
-      <p style="font-size:12px;color:#999;margin-bottom:15px">Nhập mã (shop-phuc-xxxx) và tên User mà khách đã gửi qua Zalo.</p>
-      <input type="text" id="adminActiveCode" placeholder="Mã code (VD: shop-phuc-1234)">
-      <input type="text" id="adminActiveUser" placeholder="Tên tài khoản khách hàng">
-      <button class="btn-primary" onclick="adminProcessStaffCode()">Kích Hoạt Nhân Viên</button>
-    </div>
-
-    <!-- TAB CÀI ĐẶT -->
-    <div id="admin-settings" class="admin-tab-content" style="display:none">
-      <h3>Cài đặt hệ thống</h3>
-      <p style="font-size:13px;margin-bottom:5px">Mã code nạp tiền (Tiền tố):</p>
-      <input type="text" id="adminSetBankCode" value="phuc-xxx">
-      <button class="btn-primary" onclick="adminSaveSettings()">Lưu Cài Đặt</button>
-    </div>
   </div>
 </div>
 
@@ -291,24 +308,43 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const DB_PATH = "phuc_system_v5"; // Đổi DB để đảm bảo data mới
+const DB_PATH = "phuc_system_v7"; // Nâng lên v7
 
 let currentUser = null;
-let siteSettings = { bankCode: "phuc-xxx" };
 let usersCache = {};
 
 window.notify = (msg, type='success') => {
   const el = document.createElement('div');
-  el.style.cssText = `position:fixed;top:20px;right:20px;background:${type==='success'?'var(--success)':'var(--danger)'};color:#fff;padding:12px 20px;border-radius:8px;font-weight:bold;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.3)`;
+  el.style.cssText = `position:fixed;top:70px;right:20px;background:${type==='success'?'var(--success)':'var(--danger)'};color:#fff;padding:12px 20px;border-radius:8px;font-weight:bold;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.3)`;
   el.textContent = msg;
   document.body.appendChild(el);
   setTimeout(()=>el.remove(), 3000);
+};
+
+window.copyText = (text) => {
+  if(!text || text === '...') return window.notify('Chưa có mã để copy', 'error');
+  navigator.clipboard.writeText(text).then(() => {
+    window.notify('📋 Đã sao chép: ' + text);
+  }).catch(err => {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    window.notify('📋 Đã sao chép: ' + text);
+  });
 };
 
 function getTodayStr() {
   const d = new Date();
   return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
 }
+
+window.toggleSidebar = () => {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+};
 
 window.showView = (viewName) => {
   ['home', 'deposit', 'wheel', 'rank'].forEach(v => {
@@ -320,12 +356,14 @@ window.showView = (viewName) => {
   if(document.getElementById(`nav-${viewName}`)) document.getElementById(`nav-${viewName}`).classList.add('active');
 
   if(viewName === 'rank') renderRanking();
+  if(window.innerWidth <= 768) toggleSidebar();
 };
 
 window.showModal = (id) => {
   document.getElementById(id).classList.add('show');
   if(id === 'staffModal') updateStaffModal();
   if(id === 'addLinkModal') updateLinkLimitMsg();
+  if(window.innerWidth <= 768) toggleSidebar();
 };
 window.closeModal = (id) => document.getElementById(id).classList.remove('show');
 
@@ -335,6 +373,14 @@ window.switchAuthTab = (tab) => {
   document.getElementById('auth-login').style.display = tab==='login' ? 'block' : 'none';
   document.getElementById('auth-register').style.display = tab==='register' ? 'block' : 'none';
 };
+
+// VIP LOGIC: 20k => VIP1, 50k => VIP2, 110k => VIP3
+function calculateVip(total) {
+  if(total >= 110000) return 3;
+  if(total >= 50000) return 2;
+  if(total >= 20000) return 1;
+  return 0;
+}
 
 window.doRegister = async () => {
   const user = document.getElementById('regUser').value.trim();
@@ -346,7 +392,7 @@ window.doRegister = async () => {
   if(snap.exists()) return window.notify('Tên đã tồn tại', 'error');
 
   await set(ref(db, DB_PATH+'/users/'+user), {
-    user, email, pass, role: 'user', vip: 0, balance: 0, views: 0, createdAt: Date.now(), status: 'active',
+    user, email, pass, role: 'user', vip: 0, totalDeposit: 0, balance: 0, views: 0, createdAt: Date.now(), status: 'active',
     lastLinkDate: '', linksToday: 0, turns: 1, lastWheelDate: ''
   });
   window.notify('Đăng ký thành công!');
@@ -355,10 +401,11 @@ window.doRegister = async () => {
 };
 
 window.doLogin = async () => {
-  const u = document.getElementById('loginUser').value.trim();
+  const u = document.getElementById('loginUser').value.trim().toLowerCase(); // Chuyển sang chữ thường
   const p = document.getElementById('loginPass').value;
   
-  if(u === 'Phuc' && p === 'phc51580') {
+  // Fix: Check admin bằng chữ thường
+  if(u === 'phuc' && p === 'phc51580') {
     currentUser = { user: 'Phuc', role: 'admin', vip: 3, balance: 999999 };
     localStorage.setItem('phuc_session', JSON.stringify(currentUser));
     window.notify('Chào Admin!');
@@ -385,6 +432,7 @@ window.logout = () => {
   currentUser = null;
   updateUI();
   window.notify('Đã đăng xuất');
+  showView('home');
 };
 
 function updateUI() {
@@ -396,7 +444,7 @@ function updateUI() {
         <span style="font-weight:bold;color:var(--warning)">${(currentUser.balance||0).toLocaleString()}đ</span>
         <div class="avatar" onclick="toggleUserMenu()">${currentUser.user.charAt(0).toUpperCase()}</div>
       </div>
-      <div id="userMenu" style="display:none;position:absolute;top:60px;right:20px;background:var(--card);border:1px solid #333;border-radius:8px;padding:10px;min-width:150px;box-shadow:0 5px 15px rgba(0,0,0,0.5)">
+      <div id="userMenu" style="display:none;position:absolute;top:60px;right:20px;background:var(--card);border:1px solid #333;border-radius:8px;padding:10px;min-width:150px;box-shadow:0 5px 15px rgba(0,0,0,0.5);z-index:9999">
         <p style="padding:10px;border-bottom:1px solid #333;font-weight:bold">${currentUser.user} ${vipText}</p>
         <button style="width:100%;text-align:left;padding:10px;background:none;border:none;color:#fff" onclick="logout()">🚪 Đăng xuất</button>
       </div>
@@ -444,7 +492,6 @@ window.updateStaffModal = () => {
   }
 };
 
-// LẤY MÃ STAFF GỬI ZALO
 window.getStaffCode = async () => {
   if(!currentUser) return window.notify('Vui lòng đăng nhập', 'error');
   const random = Math.floor(1000 + Math.random() * 9000);
@@ -469,6 +516,7 @@ window.submitNewLink = async () => {
   const icon = document.getElementById('newLinkIcon').value.trim() || '🔗';
   const linkGoc = document.getElementById('newLinkGoc').value.trim();
   const linkVuot = document.getElementById('newLinkVuot').value.trim();
+  const price = parseInt(document.getElementById('newLinkPrice').value) || 0;
   
   if(!title || !linkGoc) return window.notify('Nhập tên và link gốc', 'error');
   
@@ -478,7 +526,7 @@ window.submitNewLink = async () => {
   }
 
   await push(ref(db, DB_PATH+'/links'), {
-    staff: currentUser.user, title, img, icon, linkGoc, linkVuot: linkVuot || linkGoc, views: 0, createdAt: Date.now(), status: 'active'
+    staff: currentUser.user, title, img, icon, linkGoc, linkVuot: linkVuot || linkGoc, price: price, views: 0, createdAt: Date.now(), status: 'active'
   });
 
   currentUser.linksToday++;
@@ -491,6 +539,7 @@ window.submitNewLink = async () => {
   document.getElementById('newLinkImg').value = '';
   document.getElementById('newLinkGoc').value = '';
   document.getElementById('newLinkVuot').value = '';
+  document.getElementById('newLinkPrice').value = '';
 };
 
 onValue(ref(db, DB_PATH+'/links'), (snap) => {
@@ -500,13 +549,25 @@ onValue(ref(db, DB_PATH+'/links'), (snap) => {
   Object.entries(snap.val()).forEach(([id, l]) => {
     if(l.status !== 'active') return;
     const imgTag = l.img ? `<img src="${l.img}" onerror="this.parentElement.innerHTML='<span style=font-size:50px>${l.icon}</span>'">` : `<span style="font-size:50px">${l.icon}</span>`;
+    
+    // Nút mua link
+    let btnHtml = '';
+    if(l.price && l.price > 0) {
+        btnHtml = `
+            <button class="btn-view" onclick="visitLink('${id}', '${l.linkVuot}')">Xem Vượt Link (Free)</button>
+            <button class="btn-buy-price" onclick="buyLink('${id}', '${l.staff}', ${l.price}, '${l.linkGoc}')">Mua Link Gốc: ${l.price.toLocaleString()}đ</button>
+        `;
+    } else {
+        btnHtml = `<button class="btn-buy" onclick="visitLink('${id}', '${l.linkGoc || l.linkVuot}')">Vào Link (Miễn phí)</button>`;
+    }
+
     html += `
       <div class="link-card">
         <div class="img-area">${imgTag}</div>
         <div class="info">
           <h3>${l.title}</h3>
           <p>Người đăng: ${l.staff}</p>
-          <button onclick="visitLink('${id}', '${l.linkVuot}')">Truy cập ngay</button>
+          ${btnHtml}
         </div>
       </div>
     `;
@@ -529,9 +590,39 @@ window.visitLink = async (linkId, url) => {
   window.open(url, '_blank');
 };
 
+window.buyLink = async (linkId, staffName, price, url) => {
+    if(!currentUser) return window.notify('Vui lòng đăng nhập', 'error');
+    if(currentUser.role === 'admin' || currentUser.user === staffName) {
+        window.open(url, '_blank');
+        return;
+    }
+    if(currentUser.balance < price) return window.notify('Số dư không đủ để mua link này!', 'error');
+    if(!confirm(`Bạn muốn mua link này với giá ${price.toLocaleString()}đ?`)) return;
+
+    // Trừ tiền khách
+    const userRef = ref(db, DB_PATH+'/users/'+currentUser.user);
+    const newBal = currentUser.balance - price;
+    await update(userRef, { balance: newBal });
+    currentUser.balance = newBal;
+    localStorage.setItem('phuc_session', JSON.stringify(currentUser));
+    updateUI();
+
+    // Cộng tiền cho staff
+    const staffRef = ref(db, DB_PATH+'/users/'+staffName);
+    const staffSnap = await get(staffRef);
+    if(staffSnap.exists()) {
+        const staffBal = staffSnap.val().balance || 0;
+        await update(staffRef, { balance: staffBal + price });
+    }
+
+    window.notify('Mua link thành công! Đang chuyển hướng...');
+    window.open(url, '_blank');
+};
+
 onValue(ref(db, DB_PATH+'/users'), (snap) => {
   usersCache = snap.val() || {};
   renderRanking();
+  if(document.getElementById('adminModal').classList.contains('show')) loadAdminUsers();
 });
 window.renderRanking = () => {
   const list = Object.values(usersCache).filter(u => u.role === 'staff' || u.views > 0).sort((a,b) => (b.views||0) - (a.views||0)).slice(0, 10);
@@ -551,16 +642,11 @@ window.renderRanking = () => {
 window.generateDepositCode = async () => {
   if(!currentUser) return window.notify('Vui lòng đăng nhập', 'error');
   const amount = parseInt(document.getElementById('depositAmount').value);
-  let code = '';
   const randomStr = Math.floor(1000 + Math.random() * 9000); 
-  
-  if(amount === 10000) code = `vip-1-${randomStr}`;
-  else if(amount === 30000) code = `vip-2-${randomStr}`;
-  else if(amount === 50000) code = `vip-3-${randomStr}`;
-  else code = `${siteSettings.bankCode.replace('xxx', randomStr)}`;
+  const code = `nap-phuc-${randomStr}`;
 
   await push(ref(db, DB_PATH+'/deposits'), {
-    user: currentUser.user, amount, code, status: 'pending', time: Date.now(), type: amount >= 10000 ? 'vip' : 'topup'
+    user: currentUser.user, amount, code, status: 'pending', time: Date.now()
   });
 
   document.getElementById('depositCodeText').textContent = code;
@@ -593,7 +679,7 @@ window.adminTab = (id) => {
   document.getElementById(id).style.display = 'block';
   if(id === 'admin-links') loadAdminLinks();
   if(id === 'admin-deposits') loadAdminDeposits();
-  if(id === 'admin-staffs') loadAdminStaffs();
+  if(id === 'admin-users') loadAdminUsers();
 };
 
 async function loadAdminLinks() {
@@ -606,7 +692,7 @@ async function loadAdminLinks() {
     html += `
       <div class="admin-list-item">
         <h4>${l.title} (${l.staff}) - ${l.views} views</h4>
-        <p style="font-size:12px;color:#999">Ngày tạo: ${time} | Trạng thái: ${l.status}</p>
+        <p style="font-size:12px;color:#999">Giá: ${(l.price||0).toLocaleString()}đ | Trạng thái: ${l.status}</p>
         <div style="margin-top:10px;display:flex;gap:10px">
           <button class="btn-danger" onclick="adminDeleteLink('${id}')">Xóa Link</button>
         </div>
@@ -635,7 +721,7 @@ async function loadAdminDeposits() {
         <h4>User: ${d.user} muốn nạp ${d.amount.toLocaleString()}đ</h4>
         <p style="font-size:12px;color:#999">Mã: <b style="color:var(--warning)">${d.code}</b> | Lúc: ${time}</p>
         <div style="margin-top:10px;display:flex;gap:10px">
-          <button class="btn-primary" style="background:var(--success)" onclick="adminApproveDeposit('${id}', '${d.user}', ${d.amount}, '${d.code}')">Duyệt</button>
+          <button class="btn-primary" style="background:var(--success)" onclick="adminApproveDeposit('${id}', '${d.user}', ${d.amount})">Duyệt</button>
           <button class="btn-danger" onclick="adminRejectDeposit('${id}')">Từ chối</button>
         </div>
       </div>
@@ -644,27 +730,53 @@ async function loadAdminDeposits() {
   el.innerHTML = html;
 }
 
-window.adminApproveDeposit = async (id, user, amount, code) => {
+window.adminApproveDeposit = async (id, user, amount) => {
   const userRef = ref(db, DB_PATH+'/users/'+user);
   const snap = await get(userRef);
   if(!snap.exists()) return window.notify('User không tồn tại', 'error');
   const u = snap.val();
   
-  let newVip = u.vip || 0;
-  if(code.startsWith('vip-1')) newVip = 1;
-  else if(code.startsWith('vip-2')) newVip = 2;
-  else if(code.startsWith('vip-3')) newVip = 3;
+  const newTotal = (u.totalDeposit || 0) + amount;
+  const newVip = calculateVip(newTotal);
 
-  await update(userRef, { balance: (u.balance||0) + amount, vip: newVip });
+  await update(userRef, { 
+      balance: (u.balance||0) + amount, 
+      totalDeposit: newTotal,
+      vip: newVip
+  });
   await update(ref(db, DB_PATH+'/deposits/'+id), { status: 'approved' });
-  window.notify('Duyệt thành công!');
+  window.notify('Duyệt thành công! Đã cộng tiền và cập nhật VIP.');
   loadAdminDeposits();
   renderRanking();
 };
 
+window.adminRejectDeposit = async (id) => {
+    if(!confirm('Từ chối giao dịch này?')) return;
+    await update(ref(db, DB_PATH+'/deposits/'+id), { status: 'rejected' });
+    loadAdminDeposits();
+    window.notify('Đã từ chối');
+};
+
+async function loadAdminUsers() {
+  const el = document.getElementById('adminUserList');
+  let html = '';
+  Object.values(usersCache).forEach((u) => {
+    html += `
+      <div class="admin-list-item">
+        <h4>${u.user} ${u.role==='staff'?'<span class="badge">STAFF</span>':''}</h4>
+        <p style="font-size:12px;color:#999">Số dư: ${(u.balance||0).toLocaleString()}đ | Tổng nạp: ${(u.totalDeposit||0).toLocaleString()}đ | VIP: ${u.vip}</p>
+        <div style="margin-top:10px;display:flex;gap:10px">
+          <button class="btn-danger" onclick="adminBlockStaff('${u.user}')">Khóa TK</button>
+        </div>
+      </div>
+    `;
+  });
+  el.innerHTML = html;
+}
+
 // ADMIN TỰ TẠO STAFF
 window.adminCreateStaff = async () => {
-  const user = document.getElementById('adminNewStaffUser').value.trim();
+  const user = document.getElementById('adminNewStaffUser').value.trim().toLowerCase();
   const pass = document.getElementById('adminNewStaffPass').value;
   const email = document.getElementById('adminNewStaffEmail').value.trim() || 'staff@phuchub.com';
   
@@ -674,20 +786,20 @@ window.adminCreateStaff = async () => {
   if(snap.exists()) return window.notify('Tên đăng nhập đã tồn tại!', 'error');
   
   await set(ref(db, DB_PATH+'/users/'+user), {
-    user, email, pass, role: 'staff', vip: 0, balance: 0, views: 0, createdAt: Date.now(), status: 'active',
+    user, email, pass, role: 'staff', vip: 0, totalDeposit: 0, balance: 0, views: 0, createdAt: Date.now(), status: 'active',
     lastLinkDate: '', linksToday: 0, turns: 1, lastWheelDate: ''
   });
   window.notify('Tạo tài khoản Nhân viên thành công!');
   document.getElementById('adminNewStaffUser').value = '';
   document.getElementById('adminNewStaffPass').value = '';
   document.getElementById('adminNewStaffEmail').value = '';
-  loadAdminStaffs();
+  loadAdminUsers();
 };
 
 // ADMIN DUYỆT MÃ STAFF
 window.adminProcessStaffCode = async () => {
   const code = document.getElementById('adminActiveCode').value.trim();
-  const user = document.getElementById('adminActiveUser').value.trim();
+  const user = document.getElementById('adminActiveUser').value.trim().toLowerCase();
   if(!code || !user) return window.notify('Nhập đủ mã và tên user', 'error');
 
   const codeSnap = await get(ref(db, DB_PATH+'/pending_staff/'+code));
@@ -703,43 +815,16 @@ window.adminProcessStaffCode = async () => {
   window.notify(`Đã duyệt ${user} thành Nhân Viên!`);
   document.getElementById('adminActiveCode').value = '';
   document.getElementById('adminActiveUser').value = '';
+  loadAdminUsers();
 };
-
-async function loadAdminStaffs() {
-  const snap = await get(ref(db, DB_PATH+'/users'));
-  const el = document.getElementById('adminStaffList');
-  if(!snap.exists()) { el.innerHTML = 'Chưa có ai'; return; }
-  let html = '';
-  Object.entries(snap.val()).filter(([u, data]) => data.role === 'staff').forEach(([u, data]) => {
-    html += `
-      <div class="admin-list-item">
-        <h4>${u} - ${data.views||0} views</h4>
-        <p style="font-size:12px;color:#999">VIP: ${data.vip||0} | Trạng thái: ${data.status}</p>
-        <div style="margin-top:10px;display:flex;gap:10px">
-          <button class="btn-danger" onclick="adminBlockStaff('${u}')">Khóa TK</button>
-        </div>
-      </div>
-    `;
-  });
-  el.innerHTML = html;
-}
 
 window.adminBlockStaff = async (user) => {
   if(!confirm('Khóa tài khoản này?')) return;
   await update(ref(db, DB_PATH+'/users/'+user), { status: 'blocked' });
   window.notify('Đã khóa');
-  loadAdminStaffs();
+  loadAdminUsers();
 };
 
-window.adminSaveSettings = async () => {
-  const bankCode = document.getElementById('adminSetBankCode').value.trim();
-  await update(ref(db, DB_PATH+'/settings'), { bankCode });
-  window.notify('Lưu cài đặt thành công');
-};
-
-onValue(ref(db, DB_PATH+'/settings'), snap => {
-  if(snap.exists()) siteSettings = snap.val();
-});
 const session = localStorage.getItem('phuc_session');
 if(session) {
   currentUser = JSON.parse(session);
