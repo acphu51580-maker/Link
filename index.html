@@ -39,6 +39,7 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
   .overlay{display:none!important}
 }
 
+/* GRID LINKS */
 .grid-links{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
 
 /* CARD LINK */
@@ -49,10 +50,21 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
 .link-card .info{padding:15px;display:flex;flex-direction:column;gap:8px}
 .link-card h3{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .link-card p{font-size:12px;color:var(--text-muted)}
-.link-card button{width:100%;padding:10px;border-radius:6px;font-size:13px}
+.link-card button{width:100%;padding:10px;border-radius:6px;font-size:13px;text-align:center}
 .btn-view{background:#333;color:#fff}
 .btn-buy{background:var(--success);color:#fff}
 .btn-buy-price{background:var(--warning);color:#000}
+
+/* MOBILE: 3 CỘT 1 HÀNG */
+@media(max-width:768px){
+  .grid-links{grid-template-columns:repeat(3, 1fr);gap:8px}
+  .link-card .img-area{height:85px;font-size:35px}
+  .link-card .info{padding:6px;gap:4px}
+  .link-card h3{font-size:11px;white-space:normal;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;text-align:center}
+  .link-card p{display:none} /* Ẩn tên người đăng cho gọn */
+  .link-card button{padding:5px 2px;font-size:9px;border-radius:4px}
+  .btn-view, .btn-buy-price{margin-bottom:2px}
+}
 
 /* FLOATING ZALO */
 .zalo-btn{position:fixed;bottom:20px;right:20px;width:55px;height:55px;background:#0084ff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 5px 15px rgba(0,132,255,0.4);z-index:850}
@@ -139,7 +151,7 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
             <h3 style="color:var(--warning);letter-spacing:1px;margin:0" id="depositCodeText">...</h3>
             <button class="btn-primary" style="background:#ffa502;padding:5px 10px;margin:0;width:auto;font-size:12px;border-radius:4px" onclick="copyText(document.getElementById('depositCodeText').innerText)">📋 Copy</button>
           </div>
-          <p style="font-size:12px;color:#999;margin-bottom:10px" id="bankInfoText">Ngân hàng: MB Bank - STK: 0865561731 - Chủ TK: PHUC</p>
+          <p style="font-size:12px;color:#999;margin-bottom:10px">Ngân hàng: MB Bank - STK: 0865561731 - Chủ TK: PHUC</p>
           <img id="depositQrImg" style="width:100%;max-width:200px;display:none;margin:0 auto 10px;border-radius:8px;">
           <button class="btn-primary" style="background:#0084ff" onclick="window.open('https://zalo.me/' + (siteSettings.zalo||'777991352'))">Gửi mã qua Zalo Admin</button>
         </div>
@@ -201,22 +213,18 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
         <button onclick="adminTab('admin-settings')" id="tab-btn-settings">5. Cài Đặt Hệ Thống</button>
       </div>
 
-      <!-- TAB QUẢN LÝ LINK -->
       <div id="admin-links" class="admin-tab-content">
         <div id="adminLinkList"></div>
       </div>
 
-      <!-- TAB DUYỆT NẠP TIỀN -->
       <div id="admin-deposits" class="admin-tab-content" style="display:none">
         <div id="adminDepositList"></div>
       </div>
 
-      <!-- TAB DANH SÁCH USER & STAFF -->
       <div id="admin-users" class="admin-tab-content" style="display:none">
         <div id="adminUserList"></div>
       </div>
 
-      <!-- TAB TẠO & DUYỆT NHÂN VIÊN -->
       <div id="admin-create" class="admin-tab-content" style="display:none">
         <div style="background:var(--card);padding:20px;border-radius:8px;margin-bottom:20px;border:1px solid #333">
           <h4 style="margin-bottom:15px;color:var(--primary)">Tạo Tài Khoản Nhân Viên Mới</h4>
@@ -234,7 +242,6 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
         </div>
       </div>
 
-      <!-- TAB CÀI ĐẶT -->
       <div id="admin-settings" class="admin-tab-content" style="display:none">
         <div style="background:var(--card);padding:20px;border-radius:8px;border:1px solid #333;max-width:500px">
           <h4 style="margin-bottom:15px;color:var(--primary)">Cài Đặt Thông Tin Web</h4>
@@ -297,7 +304,7 @@ const IMG_KEY = "11fa26a3d2a300961577fa631bfc603c";
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const DB_PATH = "phuc_system_v9"; // Nâng lên v9
+const DB_PATH = "phuc_system_v10"; // Nâng lên v10
 
 let currentUser = null;
 let usersCache = {};
@@ -362,7 +369,6 @@ window.switchAuthTab = (tab) => {
   document.getElementById('auth-register').style.display = tab==='register' ? 'block' : 'none';
 };
 
-// VIP LOGIC: 20k V1, 40k V2, 60k V3
 function calculateVip(total) {
   if(total >= 60000) return 3;
   if(total >= 40000) return 2;
@@ -545,16 +551,16 @@ onValue(ref(db, DB_PATH+'/links'), (snap) => {
   let html = '';
   Object.entries(snap.val()).forEach(([id, l]) => {
     if(l.status !== 'active') return;
-    const imgTag = l.img ? `<img src="${l.img}" onerror="this.parentElement.innerHTML='<span style=font-size:50px>${l.icon}</span>'">` : `<span style="font-size:50px">${l.icon}</span>`;
+    const imgTag = l.img ? `<img src="${l.img}" onerror="this.parentElement.innerHTML='<span style=font-size:35px>${l.icon}</span>'">` : `<span>${l.icon}</span>`;
     
     let btnHtml = '';
     if(l.price && l.price > 0) {
         btnHtml = `
-            <button class="btn-view" onclick="visitLink('${id}', '${l.linkVuot}')">Xem Vượt Link (Free)</button>
-            <button class="btn-buy-price" onclick="buyLink('${id}', '${l.staff}', ${l.price}, '${l.linkGoc}')">Mua Link Gốc: ${l.price.toLocaleString()}đ</button>
+            <button class="btn-view" onclick="visitLink('${id}', '${l.linkVuot}')">Xem Vượt Link</button>
+            <button class="btn-buy-price" onclick="buyLink('${id}', '${l.staff}', ${l.price}, '${l.linkGoc}')">Mua Link: ${l.price.toLocaleString()}đ</button>
         `;
     } else {
-        btnHtml = `<button class="btn-buy" onclick="visitLink('${id}', '${l.linkGoc || l.linkVuot}')">Vào Link (Miễn phí)</button>`;
+        btnHtml = `<button class="btn-buy" onclick="visitLink('${id}', '${l.linkGoc || l.linkVuot}')">Vào Link</button>`;
     }
 
     html += `
@@ -644,9 +650,6 @@ window.generateDepositCode = async () => {
   if(siteSettings.qr) {
       document.getElementById('depositQrImg').src = siteSettings.qr;
       document.getElementById('depositQrImg').style.display = 'block';
-  }
-  if(siteSettings.zalo) {
-      document.getElementById('bankInfoText').innerHTML = `Ngân hàng: MB Bank - STK: 0865561731 - Chủ TK: PHUC`;
   }
   
   document.getElementById('depositResult').style.display = 'block';
@@ -745,7 +748,7 @@ window.adminApproveDeposit = async (id, user, amount) => {
 
   await update(userRef, { balance: (u.balance||0) + amount, totalDeposit: newTotal, vip: newVip });
   await update(ref(db, DB_PATH+'/deposits/'+id), { status: 'approved' });
-  window.notify('Duyệt thành công! Đã cộng tiền và cập nhật VIP.');
+  window.notify('Duyệt thành công!');
   loadAdminDeposits();
 };
 
@@ -851,12 +854,26 @@ onValue(ref(db, DB_PATH+'/settings'), snap => {
   }
 });
 
+// LOGIC TỰ ĐỘNG LƯU ĐĂNG NHẬP KHI TẢI LẠI TRANG
 const session = localStorage.getItem('phuc_session');
 if(session) {
   currentUser = JSON.parse(session);
-  get(ref(db, DB_PATH+'/users/'+currentUser.user)).then(s => {
-    if(s.exists()) { currentUser = { ...currentUser, ...s.val() }; updateUI(); }
-  });
+  if(currentUser.role === 'admin') {
+    updateUI();
+  } else {
+    get(ref(db, DB_PATH+'/users/'+currentUser.user)).then(s => {
+      if(s.exists()) {
+        currentUser = { ...currentUser, ...s.val() };
+        updateUI();
+      } else {
+        localStorage.removeItem('phuc_session');
+        currentUser = null;
+        updateUI();
+      }
+    }).catch(err => {
+      updateUI(); // Lỗi mạng thì vẫn dùng tạm session cũ
+    });
+  }
 } else {
   updateUI();
 }
