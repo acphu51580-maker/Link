@@ -92,18 +92,16 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
 .history-item.warning{border-left-color:var(--warning)}
 .history-time{font-size:12px;color:var(--text-muted);margin-top:5px}
 
-.wheel-container{text-align:center;margin:20px 0}
-.wheel{width:200px;height:200px;border-radius:50%;background:conic-gradient(var(--primary) 0deg 90deg, var(--secondary) 90deg 180deg, var(--danger) 180deg 270deg, var(--success) 270deg 360deg);margin:0 auto;position:relative;transition:transform 3s cubic-bezier(0.2,0.8,0.2,1);border:4px solid #fff}
-.wheel-arrow{width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-top:30px solid #fff;margin:0 auto -15px;position:relative;z-index:10}
+/* WHEEL UI */
+.wheel-container{text-align:center;margin:20px 0;position:relative;width:100%;max-width:300px;margin:20px auto}
+.wheel{width:100%;aspect-ratio:1;border-radius:50%;background:#222;position:relative;transition:transform 4s cubic-bezier(0.2,0.8,0.2,1);border:4px solid #fff;box-shadow:0 0 20px rgba(0,0,0,0.5);overflow:hidden}
+.wheel-arrow{position:absolute;top:-15px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-top:30px solid var(--danger);z-index:10;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5))}
+.wheel-text{position:absolute;top:50%;left:50%;width:50%;height:2px;transform-origin:0 0;}
+.wheel-text span{position:absolute;right:10px;top:-10px;font-size:12px;font-weight:bold;color:#fff;white-space:nowrap;}
 
-.rank-item{display:flex;align-items:center;gap:15px;background:var(--card);padding:15px;border-radius:10px;margin-bottom:10px;border-left:4px solid var(--primary)}
-.rank-avatar{width:45px;height:45px;border-radius:50%;background:#333;display:flex;align-items:center;justify-content:center;font-weight:bold}
-.rank-info h4{font-size:15px;margin-bottom:4px}
-.rank-info p{font-size:12px;color:var(--text-muted)}
-.rank-score{margin-left:auto;font-weight:bold;color:var(--warning);font-size:18px}
-
-.upload-box{background:#0a0a0f;border:1px dashed var(--primary);border-radius:8px;padding:15px;text-align:center;cursor:pointer;margin-bottom:12px;color:var(--primary);font-weight:bold}
-.img-preview{width:100%;height:150px;object-fit:cover;border-radius:8px;margin-bottom:12px;display:none}
+/* Code Page */
+.code-box{max-width:500px;margin:50px auto;text-align:center;background:var(--card);padding:40px 20px;border-radius:16px;border:1px solid #333}
+.code-box i{font-size:60px;color:var(--primary);margin-bottom:20px}
 </style>
 </head>
 <body>
@@ -129,7 +127,7 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
     <button onclick="showView('wheel')" id="nav-wheel">🎁 Vòng quay</button>
     <button onclick="showView('rank')" id="nav-rank">🏆 Xếp hạng</button>
     <button onclick="showView('history')" id="nav-history" style="display:none">🕒 Lịch sử</button>
-    <button onclick="showModal('codeModal')" id="nav-code" style="display:none;color:#2ed573">🎟️ Nhập mã ưu đãi</button>
+    <button onclick="showView('code')" id="nav-code" style="display:none;color:#2ed573">🎟️ Nhập mã ưu đãi</button>
     <button onclick="showModal('staffCodeModal')" id="nav-staffcode" style="display:none">💼 Đăng ký Nhân viên</button>
     <button onclick="showView('addlink')" id="nav-addlink" style="display:none;color:#ffa502">➕ Thêm Link Mới</button>
     <button onclick="showView('admin')" id="nav-admin" style="display:none;color:#ffa502">⚙️ Admin Panel</button>
@@ -145,23 +143,31 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
     <div id="view-deposit" style="display:none;max-width:500px">
       <h2>Nạp Tiền</h2>
       <div class="modal-content" style="max-width:100%">
-        <p style="font-size:13px;color:#999;margin-bottom:15px">Nhập số tiền muốn nạp (Tối thiểu 2.000đ). Tổng nạp đạt mốc sẽ tự động lên VIP (20k: V1, 40k: V2, 60k: V3).</p>
-        <input type="number" id="depositAmount" placeholder="Nhập số tiền (VD: 2000)" min="2000">
+        <p style="font-size:13px;color:#999;margin-bottom:15px">Nhập số tiền muốn nạp (Tối thiểu 2.000đ).</p>
+        <input type="number" id="depositAmount" placeholder="Nhập số tiền" min="2000">
         <button class="btn-primary" onclick="generateDepositCode()">Tạo mã nạp</button>
         <div id="depositResult" style="display:none;margin-top:20px;padding:15px;background:#0a0a0f;border-radius:8px;border:1px dashed var(--warning)">
-          
-          <p style="font-size:13px;color:#999;margin-bottom:5px">Mã chuyển khoản (Nội dung CK):</p>
+          <p style="font-size:13px;color:#999;margin-bottom:5px">Mã chuyển khoản:</p>
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:15px">
             <h3 style="color:var(--warning);letter-spacing:1px;margin:0" id="depositCodeText">...</h3>
             <button class="btn-primary" style="background:#ffa502;padding:5px 10px;margin:0;width:auto;font-size:12px;border-radius:4px" onclick="copyText(document.getElementById('depositCodeText').innerText)">📋 Copy</button>
           </div>
-          
           <p style="font-size:12px;color:#999;margin-bottom:5px">Ngân hàng: <b>MB Bank</b></p>
           <p style="font-size:12px;color:#999;margin-bottom:5px">Số TK: <b>0865561731</b></p>
           <p style="font-size:12px;color:#999;margin-bottom:10px">Chủ TK: <b>PHUC</b></p>
-          
           <img id="depositQrImg" style="width:100%;max-width:250px;display:none;margin:0 auto;border-radius:8px;">
         </div>
+      </div>
+    </div>
+
+    <!-- NHẬP MÃ ƯU ĐÃI (Trang Riêng) -->
+    <div id="view-code" style="display:none">
+      <div class="code-box">
+        <i>🎟️</i>
+        <h2 style="margin-bottom:15px">Nhập Mã Ưu Đãi</h2>
+        <p style="color:#999;margin-bottom:20px;font-size:14px">Nhập mã giảm giá hoặc mã bỏ qua vượt link.</p>
+        <input type="text" id="inputCode" placeholder="Nhập mã của bạn..." style="text-align:center;font-size:18px;text-transform:uppercase;margin-bottom:20px">
+        <button class="btn-primary" onclick="applyCode()">Áp Dụng Mã</button>
       </div>
     </div>
 
@@ -181,19 +187,15 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
       <h2>Thêm Link Mới</h2>
       <p style="font-size:12px;color:var(--warning);margin-bottom:15px" id="linkLimitMsg">Bạn còn 1 lượt đăng link hôm nay.</p>
       <div class="modal-content" style="max-width:100%">
-        <input type="text" id="newLinkTitle" placeholder="Tên hiển thị (VD: Tool Hack FF)">
-        
-        <div class="upload-box" onclick="document.getElementById('imgFile').click()">📷 Chọn ảnh từ thư viện (Tự động tải lên)</div>
+        <input type="text" id="newLinkTitle" placeholder="Tên hiển thị">
+        <div class="upload-box" onclick="document.getElementById('imgFile').click()">📷 Chọn ảnh từ thư viện</div>
         <input type="file" id="imgFile" accept="image/*" style="display:none" onchange="uploadLinkImage(this)">
         <img id="imgPreview" class="img-preview">
-        
-        <input type="text" id="newLinkImg" placeholder="Hoặc dán link ảnh trực tiếp">
+        <input type="text" id="newLinkImg" placeholder="Hoặc dán link ảnh">
         <input type="text" id="newLinkIcon" placeholder="Hoặc dùng Icon (VD: 🎮🔥)">
-        
         <input type="text" id="newLinkGoc" placeholder="Link Gốc (Link khách sẽ vào)">
         <input type="text" id="newLinkVuot" placeholder="Link Vượt (Link trung gian)">
         <input type="number" id="newLinkPrice" placeholder="Giá mua link (VNĐ) - Nhập 0 nếu Free">
-        
         <button class="btn-primary" onclick="submitNewLink()">🚀 Đăng Link Ngay</button>
       </div>
     </div>
@@ -201,13 +203,16 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
     <!-- VÒNG QUAY -->
     <div id="view-wheel" style="display:none;text-align:center">
       <h2>Vòng Quay May Mắn</h2>
-      <p style="margin-bottom:20px;color:#999" id="turnInfo">Mỗi ngày có 1 lượt quay miễn phí (VIP có thêm lượt)</p>
+      <p style="margin-bottom:20px;color:#999" id="turnInfo">Mỗi ngày có 1 lượt quay miễn phí</p>
+      
       <div class="wheel-container">
         <div class="wheel-arrow"></div>
-        <div class="wheel" id="wheelCanvas"></div>
+        <div class="wheel" id="wheelCanvas">
+          <!-- Vòng quay sẽ được render bằng JS -->
+        </div>
       </div>
       <button class="btn-primary" style="max-width:200px;margin:20px auto" onclick="spinWheel()">QUAY NGAY</button>
-      <p id="wheelResult" style="color:var(--success);font-weight:bold;margin-top:10px"></p>
+      <p id="wheelResult" style="color:var(--success);font-weight:bold;margin-top:10px;font-size:18px"></p>
     </div>
 
     <!-- BẢNG XẾP HẠNG -->
@@ -231,53 +236,63 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
         <button onclick="adminTab('admin-links')" id="tab-btn-links" class="active">1. Quản lý Link</button>
         <button onclick="adminTab('admin-deposits')" id="tab-btn-deposits">2. Duyệt Nạp</button>
         <button onclick="adminTab('admin-users')" id="tab-btn-users">3. Khách & NV</button>
-        <button onclick="adminTab('admin-create')" id="tab-btn-create">4. Tạo NV / Duyệt Mã</button>
-        <button onclick="adminTab('admin-codes')" id="tab-btn-codes">5. Tạo Mã Ưu Đãi</button>
-        <button onclick="adminTab('admin-logs')" id="tab-btn-logs">6. Lịch Sử Hệ Thống</button>
-        <button onclick="adminTab('admin-settings')" id="tab-btn-settings">7. Cài Đặt & Vòng Quay</button>
+        <button onclick="adminTab('admin-create')" id="tab-btn-create">4. Tạo NV</button>
+        <button onclick="adminTab('admin-codes')" id="tab-btn-codes">5. Quản lý Mã Ưu Đãi</button>
+        <button onclick="adminTab('admin-wheel')" id="tab-btn-wheel">6. Quản lý Vòng Quay</button>
+        <button onclick="adminTab('admin-logs')" id="tab-btn-logs">7. Lịch Sử</button>
+        <button onclick="adminTab('admin-settings')" id="tab-btn-settings">8. Cài Đặt</button>
       </div>
 
       <div id="admin-links" class="admin-tab-content"><div id="adminLinkList"></div></div>
-
       <div id="admin-deposits" class="admin-tab-content" style="display:none"><div id="adminDepositList"></div></div>
-
       <div id="admin-users" class="admin-tab-content" style="display:none"><div id="adminUserList"></div></div>
-
+      
       <div id="admin-create" class="admin-tab-content" style="display:none">
         <div style="background:var(--card);padding:20px;border-radius:8px;margin-bottom:20px;border:1px solid #333">
-          <h4 style="margin-bottom:15px;color:var(--primary)">Tạo Tài Khoản Nhân Viên Mới</h4>
-          <input type="text" id="adminNewStaffUser" placeholder="Tên đăng nhập (VD: nhanvien1)">
-          <input type="password" id="adminNewStaffPass" placeholder="Mật khẩu (VD: 123456)">
+          <h4 style="margin-bottom:15px;color:var(--primary)">Tạo Tài Khoản Nhân Viên</h4>
+          <input type="text" id="adminNewStaffUser" placeholder="Tên đăng nhập">
+          <input type="password" id="adminNewStaffPass" placeholder="Mật khẩu">
           <button class="btn-primary" onclick="adminCreateStaff()">➕ Tạo Nhân Viên</button>
-        </div>
-        <div style="background:var(--card);padding:20px;border-radius:8px;border:1px solid #333">
-          <h4 style="margin-bottom:15px;color:var(--primary)">Duyệt Mã Kích Hoạt Nhân Viên</h4>
-          <p style="font-size:12px;color:#999;margin-bottom:15px">Nhập mã (shop-phuc-xxxx) và tên User mà khách đã gửi qua Zalo.</p>
-          <input type="text" id="adminActiveCode" placeholder="Mã code (VD: shop-phuc-1234)">
-          <input type="text" id="adminActiveUser" placeholder="Tên tài khoản khách hàng">
-          <button class="btn-primary" onclick="adminProcessStaffCode()">Kích Hoạt</button>
         </div>
       </div>
 
+      <!-- QUẢN LÝ MÃ ƯU ĐÃI -->
       <div id="admin-codes" class="admin-tab-content" style="display:none">
         <div style="background:var(--card);padding:20px;border-radius:8px;border:1px solid #333;max-width:500px">
           <h4 style="margin-bottom:15px;color:var(--primary)">Tạo Mã Ưu Đãi Mới</h4>
           <input type="text" id="newCodeName" placeholder="Tên mã (VD: GIAMGIA10, FREEBYPASS)">
           <select id="newCodeType">
-            <option value="percent">Giảm giá theo %</option>
-            <option value="bypass">Khỏi Vượt Link (Vào thẳng gốc)</option>
+            <option value="percent">Giảm giá theo % (Mua link)</option>
+            <option value="bypass">Khỏi Vượt Link (1 lần)</option>
           </select>
-          <input type="number" id="newCodeValue" placeholder="Số % giảm (Nếu chọn loại giảm giá)">
+          <input type="number" id="newCodeValue" placeholder="Số % giảm (Nếu chọn giảm giá)">
+          <input type="number" id="newCodeMaxUses" placeholder="Tổng số lượt sử dụng tối đa (VD: 100)">
           <input type="number" id="newCodeDays" placeholder="Hạn sử dụng (Số ngày, VD: 30)">
           <button class="btn-primary" onclick="adminCreateCode()">➕ Tạo Mã</button>
         </div>
         <div id="adminCodeList" style="margin-top:20px"></div>
       </div>
 
-      <!-- TAB LỊCH SỬ HỆ THỐNG -->
-      <div id="admin-logs" class="admin-tab-content" style="display:none">
-        <div id="adminLogList"></div>
+      <!-- QUẢN LÝ VÒNG QUAY -->
+      <div id="admin-wheel" class="admin-tab-content" style="display:none">
+        <div style="background:var(--card);padding:20px;border-radius:8px;border:1px solid #333;max-width:500px;margin-bottom:20px">
+          <h4 style="margin-bottom:15px;color:var(--primary)">Thêm Phần Thưởng Vòng Quay</h4>
+          <input type="text" id="newPrizeName" placeholder="Tên hiển thị (VD: 10k, Chúc may mắn)">
+          <input type="text" id="newPrizeIcon" placeholder="Icon (VD: 💰, 🚀, 🎟️)">
+          <input type="color" id="newPrizeColor" value="#ff4757" style="height:40px;padding:2px;cursor:pointer">
+          <select id="newPrizeType" onchange="togglePrizeValue()">
+            <option value="money">Tiền mặt (VNĐ)</option>
+            <option value="percent">Giảm giá (%)</option>
+            <option value="bypass">Bỏ qua vượt link (1 lần)</option>
+            <option value="none">Không có gì</option>
+          </select>
+          <input type="number" id="newPrizeValue" placeholder="Giá trị (VD: 10000, 10)">
+          <button class="btn-primary" onclick="adminAddPrize()">➕ Thêm Phần Thưởng</button>
+        </div>
+        <div id="adminPrizeList"></div>
       </div>
+
+      <div id="admin-logs" class="admin-tab-content" style="display:none"><div id="adminLogList"></div></div>
 
       <div id="admin-settings" class="admin-tab-content" style="display:none">
         <div style="background:var(--card);padding:20px;border-radius:8px;border:1px solid #333;max-width:500px">
@@ -291,9 +306,6 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
           <input type="file" id="qrFile" accept="image/*" style="display:none" onchange="uploadQrImage(this)">
           <img id="qrPreview" class="img-preview" style="display:none">
           <input type="text" id="adminSetQrUrl" placeholder="Hoặc dán link ảnh QR">
-          
-          <label style="font-size:13px;color:#999;margin-top:10px;display:block">Phần thưởng vòng quay (Cách nhau bởi dấu phẩy)</label>
-          <textarea id="adminSetWheel" placeholder="VD: 10k, 20k, Chúc may mắn, 50k"></textarea>
           
           <button class="btn-primary" onclick="adminSaveSettings()">💾 Lưu Cài Đặt</button>
           <button class="btn-primary" style="background:#dc2626;margin-top:15px" onclick="adminResetAllRanks()">🔄 Reset Tất Cả Bảng Xếp Hạng</button>
@@ -329,15 +341,6 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
   </div>
 </div>
 
-<div class="modal" id="codeModal">
-  <div class="modal-content">
-    <button class="close-btn" onclick="closeModal('codeModal')">✕</button>
-    <h2 style="text-align:center;margin-bottom:20px">Nhập Mã Ưu Đãi</h2>
-    <input type="text" id="inputCode" placeholder="Nhập mã (VD: GIAMGIA10)">
-    <button class="btn-primary" onclick="applyCode()">Áp Dụng Mã</button>
-  </div>
-</div>
-
 <div class="modal" id="staffCodeModal">
   <div class="modal-content" style="text-align:center">
     <button class="close-btn" onclick="closeModal('staffCodeModal')">✕</button>
@@ -362,7 +365,7 @@ header{background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);padding:15px 20
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, set, get, push, update, onValue, remove, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, set, get, push, update, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAOKxix32T2rC9_TrF9mk6socuR0YCcVno",
@@ -377,15 +380,17 @@ const IMG_KEY = "11fa26a3d2a300961577fa631bfc603c";
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const DB_PATH = "phuc_system_v10"; // ĐÃ CHUYỂN VỀ V10 ĐỂ LẤY LẠI LINK CŨ
+const DB_PATH = "phuc_system_v10"; // Giữ nguyên v10 để có link cũ
 
 let currentUser = null;
 let usersCache = {};
 let codesCache = {};
 let logsCache = {}; 
-let siteSettings = { name: "PHUC VIP", zalo: "0865561731", qr: "", wheelPrizes: "10k, 20k, Chúc may mắn, 50k" };
+let prizesCache = [];
+let siteSettings = { name: "PHUC VIP", zalo: "0865561731", qr: "" };
 let currentRankTab = 'view';
 let currentHisTab = 'deposit';
+let isSpinning = false;
 
 window.notify = (msg, type='success') => {
   const el = document.createElement('div');
@@ -420,7 +425,7 @@ window.toggleSidebar = () => {
 };
 
 window.showView = (viewName) => {
-  ['home', 'deposit', 'wheel', 'rank', 'history', 'addlink', 'admin'].forEach(v => {
+  ['home', 'deposit', 'wheel', 'rank', 'history', 'code', 'addlink', 'admin'].forEach(v => {
     document.getElementById(`view-${v}`).style.display = 'none';
   });
   document.getElementById(`view-${viewName}`).style.display = 'block';
@@ -430,6 +435,7 @@ window.showView = (viewName) => {
 
   if(viewName === 'rank') renderRanking();
   if(viewName === 'history') renderPersonalHistory();
+  if(viewName === 'wheel') renderWheel();
   if(viewName === 'admin') { adminTab('admin-links'); loadAdminSettings(); }
   if(window.innerWidth <= 768 && document.getElementById('sidebar').classList.contains('open')) toggleSidebar();
 };
@@ -438,7 +444,6 @@ window.showModal = (id) => {
   document.getElementById(id).classList.add('show');
   if(window.innerWidth <= 768 && document.getElementById('sidebar').classList.contains('open')) toggleSidebar();
   if(id === 'staffCodeModal') updateStaffModal();
-  if(id === 'codeModal') document.getElementById('inputCode').value = '';
 };
 window.closeModal = (id) => document.getElementById(id).classList.remove('show');
 
@@ -456,7 +461,6 @@ function calculateVip(total) {
   return 0;
 }
 
-// HÀM GHI LOG HỆ THỐNG
 function writeLog(type, detail) {
   if(!currentUser) return;
   push(ref(db, DB_PATH+'/logs'), { type, user: currentUser.user, detail, time: Date.now() });
@@ -474,7 +478,7 @@ window.doRegister = async () => {
 
   await set(ref(db, DB_PATH+'/users/'+user), {
     user, email, pass, role: 'user', vip: 0, totalDeposit: 0, balance: 0, views: 0, avatar: '', 
-    usedCodes: [], bypassActive: false, discountPercent: 0, createdAt: Date.now(), status: 'active',
+    usedCodes: [], bypassActive: 0, discountPercent: 0, createdAt: Date.now(), status: 'active',
     lastLinkDate: '', linksToday: 0, turns: 1, lastWheelDate: ''
   });
   window.notify('Đăng ký thành công!');
@@ -487,7 +491,7 @@ window.doLogin = async () => {
   const p = document.getElementById('loginPass').value;
   
   if(u === 'phuc' && p === 'phc51580') {
-    currentUser = { user: 'Phuc', role: 'admin', vip: 3, balance: 999999 };
+    currentUser = { user: 'Phuc', role: 'admin', vip: 3, balance: 999999, bypassActive: 0, discountPercent: 0 };
     localStorage.setItem('phuc_session', JSON.stringify(currentUser));
     window.notify('Chào Admin!');
     updateUI(); closeModal('authModal'); showView('home'); return;
@@ -510,21 +514,23 @@ window.logout = () => {
   currentUser = null; updateUI(); window.notify('Đã đăng xuất'); showView('home');
 };
 
-// ==== UPDATE GIAO DIỆN NGƯỜI DÙNG ====
+// ==== UPDATE GIAO DIỆN ====
 function updateUI() {
   const area = document.getElementById('userDisplay');
   if(currentUser) {
     let vipText = currentUser.vip > 0 ? `<span class="badge badge-vip${currentUser.vip}">VIP ${currentUser.vip}</span>` : '';
     let avatarImg = currentUser.avatar ? `style="background-image:url('${currentUser.avatar}')"` : '';
     let avatarText = currentUser.avatar ? '' : currentUser.user.charAt(0).toUpperCase();
+    let bypassText = currentUser.bypassActive > 0 ? `<p style="font-size:12px;color:#2ed573;text-align:center;margin-top:5px;">(Đang có ${currentUser.bypassActive} lượt miễn vượt link)</p>` : '';
     
     area.innerHTML = `
       <div style="display:flex;align-items:center;gap:15px">
         <span style="font-weight:bold;color:var(--warning)">${(currentUser.balance||0).toLocaleString()}đ</span>
         <div class="avatar" id="avatarBtn" onclick="toggleUserMenu()" ${avatarImg}>${avatarText}</div>
       </div>
-      <div id="userMenu" style="display:none;position:absolute;top:60px;right:20px;background:var(--card);border:1px solid #333;border-radius:8px;padding:10px;min-width:180px;box-shadow:0 5px 15px rgba(0,0,0,0.5);z-index:9999">
+      <div id="userMenu" style="display:none;position:absolute;top:60px;right:20px;background:var(--card);border:1px solid #333;border-radius:8px;padding:10px;min-width:200px;box-shadow:0 5px 15px rgba(0,0,0,0.5);z-index:9999">
         <p style="padding:10px;border-bottom:1px solid #333;font-weight:bold;text-align:center">${currentUser.user} ${vipText}</p>
+        ${bypassText}
         <input type="file" id="avatarFile" accept="image/*" style="display:none" onchange="uploadAvatar(this)">
         <button style="width:100%;text-align:left;padding:10px;background:none;border:none;color:#fff" onclick="document.getElementById('avatarFile').click()">🖼️ Đổi ảnh đại diện</button>
         <button style="width:100%;text-align:left;padding:10px;background:none;border:none;color:#fff" onclick="logout()">🚪 Đăng xuất</button>
@@ -666,15 +672,22 @@ onValue(ref(db, DB_PATH+'/links'), (snap) => {
     const timeStr = new Date(l.createdAt).toLocaleString('vi-VN');
     
     let btnHtml = '';
-    if(l.price && l.price > 0) {
+    if(currentUser && currentUser.bypassActive > 0) {
+        btnHtml = `<button class="btn-buy" style="background:#ffa502;color:#000;" onclick="visitLink('${id}', '${l.linkVuot || l.linkGoc}', ${l.price}, '${l.linkGoc}', '${l.title}', true)">Vào Link (Free Bypass)</button>`;
+        if(l.price > 0) {
+            let displayPrice = l.price;
+            if(currentUser && currentUser.discountPercent) displayPrice = l.price * (1 - currentUser.discountPercent/100);
+            btnHtml += `<button class="btn-buy-price" style="margin-top:5px;" onclick="buyLink('${id}', '${l.staff}', ${l.price}, '${l.linkGoc}', '${l.title}')">Mua: ${displayPrice.toLocaleString()}đ</button>`;
+        }
+    } else if(l.price && l.price > 0) {
         let displayPrice = l.price;
         if(currentUser && currentUser.discountPercent) displayPrice = l.price * (1 - currentUser.discountPercent/100);
         btnHtml = `
-            <button class="btn-view" onclick="visitLink('${id}', '${l.linkVuot || l.linkGoc}', ${l.price}, '${l.linkGoc}', '${l.title}')">Vượt Link</button>
+            <button class="btn-view" onclick="visitLink('${id}', '${l.linkVuot || l.linkGoc}', ${l.price}, '${l.linkGoc}', '${l.title}', false)">Vượt Link</button>
             <button class="btn-buy-price" onclick="buyLink('${id}', '${l.staff}', ${l.price}, '${l.linkGoc}', '${l.title}')">Mua: ${displayPrice.toLocaleString()}đ</button>
         `;
     } else {
-        btnHtml = `<button class="btn-buy" onclick="visitLink('${id}', '${l.linkGoc || l.linkVuot}', 0, '', '${l.title}')">Vào Link</button>`;
+        btnHtml = `<button class="btn-buy" onclick="visitLink('${id}', '${l.linkGoc || l.linkVuot}', 0, '', '${l.title}', false)">Vào Link</button>`;
     }
 
     html += `
@@ -691,14 +704,24 @@ onValue(ref(db, DB_PATH+'/links'), (snap) => {
   grid.innerHTML = html;
 });
 
-window.visitLink = async (linkId, url, price, gocUrl, title) => {
-  if(currentUser && currentUser.bypassActive && price > 0) {
+window.visitLink = async (linkId, url, price, gocUrl, title, isBypass) => {
+  // Mở link luôn
+  if(isBypass) {
       window.open(gocUrl, '_blank'); 
   } else {
       if(url && url !== 'undefined') window.open(url, '_blank');
   }
   
+  // Xử lý logic
   try {
+    if(isBypass && currentUser) {
+        const newBypass = currentUser.bypassActive - 1;
+        await update(ref(db, DB_PATH+'/users/'+currentUser.user), { bypassActive: newBypass });
+        currentUser.bypassActive = newBypass;
+        localStorage.setItem('phuc_session', JSON.stringify(currentUser));
+        updateUI(); // Load lại nút
+    }
+
     const linkRef = ref(db, DB_PATH+'/links/'+linkId);
     const snap = await get(linkRef);
     if(snap.exists()) {
@@ -708,7 +731,7 @@ window.visitLink = async (linkId, url, price, gocUrl, title) => {
       const staffSnap = await get(staffRef);
       if(staffSnap.exists()) { await update(staffRef, { views: (staffSnap.val().views||0) + 1 }); }
       
-      if(currentUser) writeLog('Vượt Link', `Đã xem link: ${title} (Người đăng: ${data.staff})`);
+      if(currentUser) writeLog('Vượt Link', `Đã xem link: ${title}`);
     }
   } catch (e) { console.error(e); }
 };
@@ -737,7 +760,7 @@ window.buyLink = async (linkId, staffName, price, url, title) => {
         const staffSnap = await get(staffRef);
         if(staffSnap.exists()) { await update(staffRef, { balance: (staffSnap.val().balance || 0) + finalPrice }); }
         
-        writeLog('Mua Link', `Mua link: ${title} (Giá: ${finalPrice.toLocaleString()}đ) từ ${staffName}`);
+        writeLog('Mua Link', `Mua link: ${title} (Giá: ${finalPrice.toLocaleString()}đ)`);
     } catch (e) { console.error(e); }
 };
 
@@ -754,24 +777,29 @@ window.applyCode = async () => {
   
   const cData = cSnap.val();
   if(Date.now() > cData.expiresAt) return window.notify('Mã đã hết hạn', 'error');
+  if(cData.usedCount >= cData.maxUses) return window.notify('Mã đã hết lượt sử dụng', 'error');
   
   const usedList = cData.usedBy || [];
   if(usedList.includes(currentUser.user)) return window.notify('Bạn đã sử dụng mã này rồi', 'error');
   
+  // Update Mã
   usedList.push(currentUser.user);
-  await update(ref(db, DB_PATH+'/codes/'+codeStr), { usedBy: usedList });
+  await update(ref(db, DB_PATH+'/codes/'+codeStr), { usedBy: usedList, usedCount: (cData.usedCount||0) + 1 });
   
+  // Update User
   if(cData.type === 'percent') {
       await update(ref(db, DB_PATH+'/users/'+currentUser.user), { discountPercent: cData.value });
       currentUser.discountPercent = cData.value;
       window.notify(`Kích hoạt thành công! Giảm ${cData.value}% cho lần mua tới.`);
   } else if (cData.type === 'bypass') {
-      await update(ref(db, DB_PATH+'/users/'+currentUser.user), { bypassActive: true });
-      currentUser.bypassActive = true;
-      window.notify('Kích hoạt thành công! Bạn đã có thể vào thẳng Link Gốc.');
+      const currentBypass = currentUser.bypassActive || 0;
+      await update(ref(db, DB_PATH+'/users/'+currentUser.user), { bypassActive: currentBypass + 1 });
+      currentUser.bypassActive = currentBypass + 1;
+      window.notify('Kích hoạt thành công! Bạn được miễn vượt link 1 lần.');
   }
   localStorage.setItem('phuc_session', JSON.stringify(currentUser));
-  closeModal('codeModal');
+  document.getElementById('inputCode').value = '';
+  updateUI();
 };
 
 // ==== LỊCH SỬ ====
@@ -795,13 +823,9 @@ function renderPersonalHistory() {
   
   let myLogs = Object.values(logsCache).filter(l => l.user === currentUser.user).sort((a,b) => b.time - a.time);
   
-  if(currentHisTab === 'deposit') {
-      myLogs = myLogs.filter(l => l.type.includes('Nạp'));
-  } else if(currentHisTab === 'purchase') {
-      myLogs = myLogs.filter(l => l.type === 'Mua Link');
-  } else if(currentHisTab === 'view') {
-      myLogs = myLogs.filter(l => l.type === 'Vượt Link');
-  }
+  if(currentHisTab === 'deposit') myLogs = myLogs.filter(l => l.type.includes('Nạp'));
+  else if(currentHisTab === 'purchase') myLogs = myLogs.filter(l => l.type === 'Mua Link');
+  else if(currentHisTab === 'view') myLogs = myLogs.filter(l => l.type === 'Vượt Link');
   
   if(!myLogs.length) { el.innerHTML = '<p style="text-align:center;color:#999;margin-top:20px;">Chưa có lịch sử.</p>'; return; }
   
@@ -816,71 +840,93 @@ function renderPersonalHistory() {
   }).join('');
 }
 
-// ==== VÒNG QUAY & XẾP HẠNG ====
-window.switchRankTab = (tab) => {
-  currentRankTab = tab;
-  document.getElementById('tab-rank-view').classList.toggle('active', tab==='view');
-  document.getElementById('tab-rank-deposit').classList.toggle('active', tab==='deposit');
-  renderRanking();
-};
-
-onValue(ref(db, DB_PATH+'/users'), (snap) => {
-  usersCache = snap.val() || {};
-  renderRanking();
-  if(document.getElementById('view-admin').style.display === 'block' && document.getElementById('admin-users').style.display === 'block') loadAdminUsers();
+// ==== VÒNG QUAY ====
+onValue(ref(db, DB_PATH+'/settings/wheelPrizes'), (snap) => {
+  prizesCache = snap.val() || [];
+  if(!Array.isArray(prizesCache)) prizesCache = [];
+  drawWheel();
+  if(currentUser && currentUser.role === 'admin' && document.getElementById('view-admin').style.display === 'block') loadAdminWheel();
 });
 
-window.renderRanking = () => {
-  let list = Object.values(usersCache).filter(u => !u.deleted && u.role !== 'admin');
-  
-  if(currentRankTab === 'view') {
-      list = list.filter(u => u.views > 0).sort((a,b) => (b.views||0) - (a.views||0));
-  } else {
-      list = list.filter(u => u.totalDeposit > 0).sort((a,b) => (b.totalDeposit||0) - (a.totalDeposit||0));
+function drawWheel() {
+  const wheelEl = document.getElementById('wheelCanvas');
+  if(!wheelEl || prizesCache.length === 0) {
+      if(wheelEl) wheelEl.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#fff;font-size:14px;">Chưa có giải thưởng</div>';
+      return;
   }
-  list = list.slice(0, 10);
   
-  const el = document.getElementById('rankList');
-  el.innerHTML = list.map((u, i) => {
-    let scoreStr = currentRankTab === 'view' ? `${u.views||0} views` : `${(u.totalDeposit||0).toLocaleString()}đ`;
-    let avt = u.avatar ? `style="background-image:url('${u.avatar}');background-size:cover"` : '';
-    let txt = u.avatar ? '' : u.user.charAt(0).toUpperCase();
-    return `
-    <div class="rank-item">
-      <div class="rank-avatar" ${avt}>${txt}</div>
-      <div class="rank-info">
-        <h4>${u.user} ${u.vip>0?`<span class="badge badge-vip${u.vip}">V${u.vip}</span>`:''}</h4>
-      </div>
-      <div class="rank-score">${scoreStr}</div>
-    </div>`;
-  }).join('');
-};
+  const numPrizes = prizesCache.length;
+  const anglePerPrize = 360 / numPrizes;
+  
+  let conicStr = [];
+  let textHtml = '';
+  
+  prizesCache.forEach((p, i) => {
+      let startAngle = i * anglePerPrize;
+      let endAngle = startAngle + anglePerPrize;
+      conicStr.push(`${p.color || '#6a11cb'} ${startAngle}deg ${endAngle}deg`);
+      
+      let rotateAngle = startAngle + (anglePerPrize / 2);
+      textHtml += `<div class="wheel-text" style="transform:rotate(${rotateAngle}deg);">
+          <span style="color:${p.textColor || '#fff'};text-shadow:0 1px 2px #000;">${p.icon || ''} ${p.name || ''}</span>
+      </div>`;
+  });
+  
+  wheelEl.style.background = `conic-gradient(${conicStr.join(',')})`;
+  wheelEl.innerHTML = textHtml;
+}
 
 window.spinWheel = async () => {
   if(!currentUser) return window.notify('Vui lòng đăng nhập', 'error');
   if(currentUser.turns <= 0) return window.notify('Đã hết lượt quay hôm nay', 'error');
+  if(isSpinning || prizesCache.length === 0) return;
+  
+  isSpinning = true;
+  const wheelEl = document.getElementById('wheelCanvas');
+  const randomIndex = Math.floor(Math.random() * prizesCache.length);
+  const anglePerPrize = 360 / prizesCache.length;
+  
+  // Tính góc để quay trúng giải (quay 5 vòng + góc của giải)
+  const targetDeg = 3600 + (360 - (randomIndex * anglePerPrize) - (anglePerPrize / 2));
+  wheelEl.style.transform = `rotate(${targetDeg}deg)`;
 
-  const wheel = document.getElementById('wheelCanvas');
-  const deg = 1800 + Math.floor(Math.random() * 360);
-  wheel.style.transform = `rotate(${deg}deg)`;
-
+  // Trừ lượt
   currentUser.turns--;
   await update(ref(db, DB_PATH+'/users/'+currentUser.user), { turns: currentUser.turns, lastWheelDate: getTodayStr() });
   localStorage.setItem('phuc_session', JSON.stringify(currentUser));
 
-  setTimeout(() => {
-    let prizes = (siteSettings.wheelPrizes || "10k, 20k, Chúc may mắn, 50k").split(',').map(s=>s.trim());
-    let win = prizes[Math.floor(Math.random()*prizes.length)];
-    document.getElementById('wheelResult').textContent = `🎉 Bạn nhận được: ${win}`;
-    updateUI();
-  }, 3000);
+  setTimeout(async () => {
+    const prize = prizesCache[randomIndex];
+    let msg = `🎉 Bạn nhận được: ${prize.name}`;
+    let updateData = {};
+    
+    if(prize.type === 'money') {
+        updateData.balance = (currentUser.balance || 0) + parseInt(prize.value);
+        msg += ` (Đã cộng ${parseInt(prize.value).toLocaleString()}đ)`;
+    } else if(prize.type === 'bypass') {
+        updateData.bypassActive = (currentUser.bypassActive || 0) + 1;
+        msg += ` (Miễn vượt link 1 lần)`;
+    } else if(prize.type === 'percent') {
+        updateData.discountPercent = parseInt(prize.value);
+        msg += ` (Giảm ${prize.value}% mua link)`;
+    }
+    
+    if(Object.keys(updateData).length > 0) {
+        await update(ref(db, DB_PATH+'/users/'+currentUser.user), updateData);
+        Object.assign(currentUser, updateData);
+        localStorage.setItem('phuc_session', JSON.stringify(currentUser));
+        updateUI();
+    }
+
+    document.getElementById('wheelResult').textContent = msg;
+    isSpinning = false;
+  }, 4500); // Khớp với transition 4s
 };
 
 // NẠP TIỀN
 window.generateDepositCode = async () => {
   if(!currentUser) return window.notify('Vui lòng đăng nhập', 'error');
   const amount = parseInt(document.getElementById('depositAmount').value);
-  // ĐÃ SỬA: Từ 2000đ trở lên là được, dưới 2000đ là chặn
   if(!amount || amount < 2000) return window.notify('Số tiền nạp tối thiểu 2.000đ', 'error');
   
   const randomStr = Math.floor(1000 + Math.random() * 9000); 
@@ -907,6 +953,7 @@ window.adminTab = (id) => {
   if(id === 'admin-deposits') loadAdminDeposits();
   if(id === 'admin-users') loadAdminUsers();
   if(id === 'admin-codes') loadAdminCodes();
+  if(id === 'admin-wheel') loadAdminWheel();
   if(id === 'admin-logs') loadAdminLogs();
 };
 
@@ -964,7 +1011,7 @@ async function loadAdminUsers() {
   el.innerHTML = Object.values(usersCache).filter(u => !u.deleted).map((u) => `
       <div class="admin-list-item">
         <h4>${u.user} ${u.role==='staff'?'<span class="badge">NHÂN VIÊN</span>':''}</h4>
-        <p style="font-size:12px;color:#999">Số dư: ${(u.balance||0).toLocaleString()}đ | Nạp: ${(u.totalDeposit||0).toLocaleString()}đ | VIP: ${u.vip}</p>
+        <p style="font-size:12px;color:#999">Số dư: ${(u.balance||0).toLocaleString()}đ | Nạp: ${(u.totalDeposit||0).toLocaleString()}đ | VIP: ${u.vip} | Bypass: ${u.bypassActive||0}</p>
         <div style="margin-top:10px;display:flex;gap:5px;align-items:center;">
           <input type="number" id="amt_${u.user}" placeholder="Nhập tiền" style="width:100px;margin:0;padding:5px;font-size:12px;">
           <button class="btn-primary" style="padding:5px 10px;margin:0;width:auto" onclick="adminAddMoney('${u.user}')">+ Cộng</button>
@@ -989,26 +1036,14 @@ window.adminDeleteUser = async (user) => {
   window.notify('Đã xóa tài khoản'); loadAdminUsers(); renderRanking();
 };
 
-// TẠO STAFF & MÃ KÍCH HOẠT
+// TẠO STAFF
 window.adminCreateStaff = async () => {
   const user = document.getElementById('adminNewStaffUser').value.trim().toLowerCase();
   const pass = document.getElementById('adminNewStaffPass').value;
   if(!user || !pass) return;
   if(usersCache[user]) return window.notify('Tên đã tồn tại', 'error');
-  await set(ref(db, DB_PATH+'/users/'+user), { user, pass, role: 'staff', vip: 0, totalDeposit: 0, balance: 0, views: 0, usedCodes: [], createdAt: Date.now(), status: 'active', lastLinkDate: '', linksToday: 0, turns: 1, lastWheelDate: '' });
+  await set(ref(db, DB_PATH+'/users/'+user), { user, pass, role: 'staff', vip: 0, totalDeposit: 0, balance: 0, views: 0, usedCodes: [], bypassActive: 0, discountPercent: 0, createdAt: Date.now(), status: 'active', lastLinkDate: '', linksToday: 0, turns: 1, lastWheelDate: '' });
   window.notify('Tạo thành công!'); loadAdminUsers();
-};
-
-window.adminProcessStaffCode = async () => {
-  const code = document.getElementById('adminActiveCode').value.trim();
-  const user = document.getElementById('adminActiveUser').value.trim().toLowerCase();
-  if(!code || !user) return;
-  const codeSnap = await get(ref(db, DB_PATH+'/pending_staff/'+code));
-  if(!codeSnap.exists()) return window.notify('Mã sai', 'error');
-  if(!usersCache[user]) return window.notify('User không tồn tại', 'error');
-  await update(ref(db, DB_PATH+'/users/'+user), { role: 'staff' });
-  await remove(ref(db, DB_PATH+'/pending_staff/'+code));
-  window.notify('Kích hoạt Nhân viên thành công!');
 };
 
 window.getStaffCode = async () => {
@@ -1024,11 +1059,12 @@ window.adminCreateCode = async () => {
   const name = document.getElementById('newCodeName').value.trim().toUpperCase();
   const type = document.getElementById('newCodeType').value;
   const value = parseInt(document.getElementById('newCodeValue').value) || 0;
+  const maxUses = parseInt(document.getElementById('newCodeMaxUses').value) || 100;
   const days = parseInt(document.getElementById('newCodeDays').value) || 30;
   if(!name) return window.notify('Nhập tên mã', 'error');
   
   const expiresAt = Date.now() + (days * 24 * 60 * 60 * 1000);
-  await set(ref(db, DB_PATH+'/codes/'+name), { type, value, expiresAt, usedBy: [] });
+  await set(ref(db, DB_PATH+'/codes/'+name), { type, value, maxUses, usedCount: 0, expiresAt, usedBy: [] });
   window.notify('Tạo mã thành công!'); loadAdminCodes();
 };
 
@@ -1038,20 +1074,57 @@ async function loadAdminCodes() {
   el.innerHTML = Object.entries(codesCache).map(([code, c]) => `
     <div class="admin-list-item" style="border-left:3px solid ${c.type==='percent'?'#2ed573':'#ffa502'}">
       <h4>${code} - ${c.type === 'percent' ? `Giảm ${c.value}%` : 'Bỏ qua Vượt Link'}</h4>
-      <p style="font-size:12px;color:#999">Hạn: ${new Date(c.expiresAt).toLocaleDateString()} | Đã dùng: ${(c.usedBy||[]).length} lần</p>
+      <p style="font-size:12px;color:#999">Đã dùng: ${c.usedCount||0}/${c.maxUses||100} | Hạn: ${new Date(c.expiresAt).toLocaleDateString()}</p>
       <button class="btn-danger" style="margin-top:5px;padding:4px 8px;font-size:11px;" onclick="adminDelCode('${code}')">Xóa Mã</button>
     </div>`).join('');
 }
 
 window.adminDelCode = async (code) => { if(!confirm('Xóa mã này?')) return; await remove(ref(db, DB_PATH+'/codes/'+code)); loadAdminCodes(); };
 
+// QUẢN LÝ VÒNG QUAY
+window.togglePrizeValue = () => {
+  const type = document.getElementById('newPrizeType').value;
+  if(type === 'none') document.getElementById('newPrizeValue').style.display = 'none';
+  else document.getElementById('newPrizeValue').style.display = 'block';
+};
+
+window.adminAddPrize = async () => {
+  const name = document.getElementById('newPrizeName').value.trim();
+  const icon = document.getElementById('newPrizeIcon').value.trim() || '🎁';
+  const color = document.getElementById('newPrizeColor').value;
+  const type = document.getElementById('newPrizeType').value;
+  const value = parseInt(document.getElementById('newPrizeValue').value) || 0;
+  
+  if(!name) return window.notify('Nhập tên giải thưởng', 'error');
+  
+  const newPrizes = [...prizesCache, { name, icon, color, type, value }];
+  await set(ref(db, DB_PATH+'/settings/wheelPrizes'), newPrizes);
+  window.notify('Đã thêm giải thưởng!');
+  document.getElementById('newPrizeName').value = '';
+  document.getElementById('newPrizeIcon').value = '';
+};
+
+function loadAdminWheel() {
+  const el = document.getElementById('adminPrizeList');
+  if(!prizesCache.length) { el.innerHTML = 'Chưa có giải thưởng'; return; }
+  el.innerHTML = prizesCache.map((p, i) => `
+    <div class="admin-list-item" style="border-left:3px solid ${p.color}">
+      <h4>${p.icon} ${p.name} (${p.type === 'money' ? p.value.toLocaleString()+'đ' : p.type === 'percent' ? p.value+'%' : p.type === 'bypass' ? '1 Bypass' : 'None'})</h4>
+      <button class="btn-danger" style="margin-top:5px;padding:4px 8px;font-size:11px;" onclick="adminDelPrize(${i})">Xóa</button>
+    </div>`).join('');
+}
+
+window.adminDelPrize = async (index) => { 
+  if(!confirm('Xóa giải thưởng này?')) return; 
+  let newPrizes = prizesCache.filter((_, i) => i !== index);
+  await set(ref(db, DB_PATH+'/settings/wheelPrizes'), newPrizes); 
+};
+
 // LỊCH SỬ HỆ THỐNG (ADMIN)
 function loadAdminLogs() {
   const el = document.getElementById('adminLogList');
   let logs = Object.values(logsCache).sort((a,b) => b.time - a.time);
-  
   if(!logs.length) { el.innerHTML = 'Chưa có hoạt động nào.'; return; }
-  
   el.innerHTML = logs.map(l => {
     let cls = l.type.includes('Hủy') ? 'danger' : (l.type.includes('Thành')||l.type.includes('Mua') ? 'success' : 'warning');
     return `
@@ -1082,7 +1155,6 @@ async function loadAdminSettings() {
   document.getElementById('adminSetName').value = siteSettings.name;
   document.getElementById('adminSetZalo').value = siteSettings.zalo;
   document.getElementById('adminSetQrUrl').value = siteSettings.qr || '';
-  document.getElementById('adminSetWheel').value = siteSettings.wheelPrizes || '';
   const pv = document.getElementById('qrPreview');
   if(siteSettings.qr) { pv.src = siteSettings.qr; pv.style.display = 'block'; }
 }
@@ -1091,17 +1163,16 @@ window.adminSaveSettings = async () => {
   const name = document.getElementById('adminSetName').value.trim();
   const zalo = document.getElementById('adminSetZalo').value.trim();
   const qr = document.getElementById('adminSetQrUrl').value.trim();
-  const wheelPrizes = document.getElementById('adminSetWheel').value.trim();
-  await update(ref(db, DB_PATH+'/settings'), { name, zalo, qr, wheelPrizes });
+  await update(ref(db, DB_PATH+'/settings'), { name, zalo, qr });
   window.notify('Đã lưu cài đặt!');
 };
 
 onValue(ref(db, DB_PATH+'/settings'), snap => {
   if(snap.exists()) {
-    siteSettings = snap.val();
-    document.getElementById('webLogo').textContent = siteSettings.name;
-    document.title = siteSettings.name;
-    document.getElementById('zaloFloatBtn').href = 'https://zalo.me/' + siteSettings.zalo;
+    siteSettings = { ...siteSettings, ...snap.val() };
+    document.getElementById('webLogo').textContent = siteSettings.name || 'PHUC VIP';
+    document.title = siteSettings.name || 'PHUC VIP';
+    document.getElementById('zaloFloatBtn').href = 'https://zalo.me/' + (siteSettings.zalo || '0865561731');
   }
 });
 
